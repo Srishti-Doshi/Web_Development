@@ -1,0 +1,1 @@
+alert("Be aware of cyber frauds!!")
