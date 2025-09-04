@@ -1,0 +1,12 @@
+.yellow {
+    color: crimson;
+}
+
+#first {
+    background-color: blueviolet;
+    color: yellow;
+}
+
+#second {
+    border: 2px solid black;
+}
