@@ -1,9 +1,11 @@
-table{
+table {
     border: 2px solid black;
 }
-th{
+
+th {
     border: 2px solid black;
 }
-td{
+
+td {
     border: 1px solid black;
 }
