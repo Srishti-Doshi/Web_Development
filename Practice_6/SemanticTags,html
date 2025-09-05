@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Semantic Tags in HTML</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+
+    header,
+    nav,
+    section,
+    article,
+    aside,
+    footer {
+      border: 1px solid #ccc;
+      margin: 10px;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    header {
+      background: #f8f9fa;
+      text-align: center;
+    }
+
+    nav {
+      background: #e9ecef;
+    }
+
+    section {
+      background: #fdfdfd;
+    }
+
+    article {
+      background: #f1f1f1;
+    }
+
+    aside {
+      background: #faf0e6;
+    }
+
+    footer {
+      background: #f8f9fa;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header: Represents the top section of the page -->
+  <header>
+    <h1>Semantic Tags in HTML</h1>
+    <p>Understanding the meaning of each part of a webpage</p>
+  </header>
+
+  <!-- Nav: Represents navigation links -->
+  <nav>
+    <a href="#about">About</a> |
+    <a href="#articles">Articles</a> |
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <!-- Main content section -->
+  <section id="about">
+    <h2>What are Semantic Tags?</h2>
+    <p>
+      Semantic tags clearly describe their meaning in a human- and machine-readable way.
+      They make HTML more understandable for developers, browsers, and search engines.
+    </p>
+  </section>
+
+  <!-- Articles section -->
+  <section id="articles">
+    <h2>Examples of Semantic Tags</h2>
+
+    <!-- Article 1 -->
+    <article>
+      <h3>&lt;article&gt;</h3>
+      <p>
+        The <code>&lt;article&gt;</code> tag represents independent content.
+        For example, a blog post, a news article, or a forum post.
+      </p>
+    </article>
+
+    <!-- Article 2 -->
+    <article>
+      <h3>&lt;section&gt;</h3>
+      <p>
+        The <code>&lt;section&gt;</code> tag defines a thematic grouping of content, usually with a heading.
+      </p>
+    </article>
+  </section>
+
+  <!-- Aside: Represents side content -->
+  <aside>
+    <h3>Did You Know?</h3>
+    <p>
+      Before HTML5, developers mostly used <code>&lt;div&gt;</code> tags everywhere.
+      Semantic tags replaced many of them to make code more meaningful!
+    </p>
+  </aside>
+
+  <!-- Footer: Bottom part of the page -->
+  <footer id="contact">
+    <p>Created by Srishti | Contact: srishti@example.com</p>
+  </footer>
+
+</body>
+
+</html>
