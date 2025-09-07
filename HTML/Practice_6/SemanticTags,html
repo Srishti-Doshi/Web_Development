@@ -28,6 +28,8 @@
     header {
       background: #f8f9fa;
       text-align: center;
+      position:sticky;
+      top:5px;
     }
 
     nav {
