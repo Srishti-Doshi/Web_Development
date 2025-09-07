@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selectors in CSS</title>
+    <style>
+        /*Element Selector*/
+        h1{
+            color:darkblue;
+        }
+
+        /*Class Selector*/
+        .green{
+            color:rgb(2, 74, 2);
+        }
+
+        /*ID Selector*/
+        #para{
+            background-color: rgb(228, 151, 218);
+        }
+
+        /*Child Selector*/
+        div > h2{
+            color: blueviolet;
+        }
+
+        /*Descendant Selector*/
+        div h3{
+            color: maroon;
+        }
+
+        /*Universal Selector*/
+        * {
+            background-color:beige;
+        }
+
+        /*Pseudo Selector*/
+        a:visited{
+            color: deeppink;
+        }
+
+        a:link{
+            color:olive;
+        }
+
+        a:active{
+            background-color: darkblue;
+        }
+
+        a:hover{
+            background-color: darkred;
+        }
+
+        p:first-child{
+            background-color: cyan;
+        }
+    </style>
+    
+</head>
+<body>
+    <h1>Element Selector</h1>
+    <div>
+        <h2>Child Selector</h2>
+        <p id = para class = "green">
+            "Class Selector"
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores excepturi minima in a explicabo accusamus voluptatum culpa veritatis, laudantium nostrum.
+        </p>
+    </div>
+    
+    <div>
+        <article>
+            <h3>Discendant of div</h3>
+        </article>
+    </div>
+
+    <a href = "https://google.com">Google</a>
+
+    <span>
+        <p>first-child</p>
+        <p>Lorem ipsum dolor sit.</p>
+    </span>
+</body>
+</html>
