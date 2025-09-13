@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Overflow Property</title>
+    <style>
+        * {
+            padding: 20px;
+            margin: 10px;
+        }
+
+        .box1 {
+            border: 2px solid black;
+            height: 50px;
+            width: 200px;
+            /* overflow: visible; */
+            /* overflow: hidden; */
+            /* overflow: scroll; */
+            /* overflow: auto; */
+            /* overflow: clip; */
+            /* white-space: nowrap; */
+            /* overflow-x: scroll; */
+            /* prevents wrapping */
+            /* overflow-x: auto; */
+            /* enables horizontal scroll if needed */
+            /* overflow-y: hidden; */
+            /* white-space: normal; */
+            /* white-space: pre; */
+            /* white-space: pre-wrap; */
+            overflow: scroll scroll;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box box1">Overflow is a base property.
+        Its default value is visible means content just spills out of the box.
+    </div>
+
+    <div class="box1">Overflowisabaseproperty.Itsdefaultvalueisvisiblemeanscontent Lorem ipsum dolor, sit amet
+        consectetur adipisicing elit. Ad quam porro omnis, assumenda animi consectetur perferendis aspernatur, placeat
+        beatae magnam architecto? Nostrum eum repellat sapiente veniam ea laboriosam, sequi officiis. Laborum recusandae
+        quia repellendus doloribus blanditiis commodi, nulla quisquam? Velit.
+    </div>
+
+</html>
