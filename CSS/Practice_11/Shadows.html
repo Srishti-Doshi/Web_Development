@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Shadows & Outlines</title>
+    <style>
+        .box1 {
+            border: 2px solid black;
+            box-shadow: 5px 5px 5px 5px #888888;
+            margin: 25px;
+        }
+
+        .box2 {
+            border: 2px solid black;
+            box-shadow: inset 10px 8px 1px 0.1px rgb(188, 234, 170);
+            margin: 25px;
+        }
+
+        .text {
+            text-shadow: 2px 2px 4px red;
+            border: 2px solid black;
+            border-radius: 15px;
+            outline: 4px dashed red;
+            outline-offset: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box1">
+        I am a Shadow 👻🌒
+    </div>
+
+    <div class="box2">
+        I am a inset Shadow..
+    </div>
+
+    <div class="text">Text Shadow: Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta illum nisi doloremque magni culpa perspiciatis nobis porro veritati placeat commodi.
+    </div>
+</body>
+
+</html>
