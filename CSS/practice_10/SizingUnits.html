@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Sizing Units</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .box {
+            /* width: 200px; */
+            /* width: 1920px; */
+            /* width: 2048px; */
+            box-sizing: border-box;
+            border: 2px solid black;
+            width: 80vw;
+            height: 10vh;
+            margin: auto;
+            /*make the block elements center*/
+            background-color: aquamarine;
+        }
+
+        html {
+            font-size: 12px;
+        }
+
+        .container {
+            box-sizing: border-box;
+            border: 2px solid black;
+            width: 80vw;
+            height: 80vh;
+            margin: 23px auto;
+            /*make the block elements center*/
+            font-size: 18px;
+            background-color: aquamarine;
+            min-height: 60vmin;
+        }
+
+        .container p {
+            /* font-size: 0.5em; */
+            font-size: 2rem;
+            border: 10px solid red;
+            width: 80%;
+        }
+
+        .mycont {
+            background-color: darkgoldenrod;
+            color: black;
+            box-sizing: border-box;
+            margin: 23px auto;
+            font-size: 22px;
+            width: 80vw;
+            height: 20vmin;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Values_and_Units -->
+    <div class="box">CSS Sizing Units , Did you know? Pixel is 196th of an inch.</div>
+
+    <div class="container">
+        <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis repudiandae voluptatum iste architecto
+            pariatur, voluptatibus optio.Impedit,
+            fugiat assumenda incidunt quis saepe deleniti. Lorem ipsum dolor, sit amet consectetur
+            adipisicing elit.
+        </p>
+    </div>
+
+    <div class="mycont">
+        This is another box
+    </div>
+</body>
+
+</html>
