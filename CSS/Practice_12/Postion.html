@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Position Property</title>
+    <style>
+        .box {
+            margin: 10px;
+            padding: 50px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div style="margin:20px; border: 4px solid black ; width: 400px; height: 500px;;">
+
+        <div class="box" style="position: static; border: 2px solid blue; background-color: rgb(167, 205, 248)">
+            Static position property</div>
+
+        <div class="box"
+            style="position: relative; border: 2px solid red; background-color: rgb(234, 165, 137); top: 20px; left: 30px; ">
+            I am relative. Moved 20px down and 30px right.</div>
+
+        <div class="box"
+            style="position: absolute; border: 2px solid green; background-color: rgb(132, 219, 138); top: 90px; ">
+            Absoloute position property. I am box 3 moved 90 px down</div>
+
+        <div class="box" style="position: fixed; border: 2px solid blueviolet; background-color: rgb(241, 167, 248) ">I
+            am fixed (always at top-right of screen).</div>
+
+    </div>
+
+    <div class="box" style="position: sticky; border: 2px solid rgb(226, 226, 43); background-color:yellow ;top: 0" ;> I
+        am sticky (I stick to the top when you scroll).</div>
+
+    <div style="height: 2000px;background: linear-gradient(white, lightblue);">
+        Scroll down and watch fixed stay in place!
+        Scroll down to see sticky stick at the top.</div>
+
+</body>
+
+</html>
