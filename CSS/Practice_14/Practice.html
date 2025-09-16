@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        :root{
+            --color:rgb(245, 220, 220);
+            --defpadding:10px;
+            --opac:1;
+        }
+        p{
+            color: var(--color);
+            padding: var(--defpadding);
+            opacity: var(--opac);
+        }
+        ul{
+            --color:rgb(33, 155, 33);
+            color: var(--color);
+        }
+        span{
+            color: var(--color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae?</p>
+    </div>
+    <div>
+        <ul>
+            <li>Local Variable</li>
+            <li>Contact</li>
+            <li>Info</li>
+        </ul>
+    </div>
+    <span>Global Variable</span>
+
+</body>
+</html>
