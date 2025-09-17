@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use of Universal Selector,attribute Selector,grouping</title>
+    <style>
+        .boxes * {
+            color: blue;
+            border: 2px solid greenyellow;
+        }
+
+        [data-color="primary"] {
+            padding-top: 45px;
+
+        }
+
+        p,
+        a,
+        .box,
+        [data-color="padding"] {
+            background-color: lemonchiffon;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="boxes">
+        <div data-color="primary" class="box">I am Box1</div>
+        <div class="box">I am Box2</div>
+        <div class="box">I am Box3</div>
+    </div>
+</body>
+
+</html>
