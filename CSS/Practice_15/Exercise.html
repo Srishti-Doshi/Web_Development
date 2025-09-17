@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Multicolor Website</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+        :root {
+            --primarycolor: rgb(9, 100, 9);
+            --textcolor: white;
+            --secondarycolor: rgb(180, 241, 183);
+        }
+
+        /* :root{
+            --primarycolor:blueviolet;
+            --textcolor:white;
+            --secondarycolor:rgb(188, 171, 205);
+        } */
+        body {
+            background-color: var(--secondarycolor);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        nav {
+            background-color: var(--primarycolor);
+            padding: 12px 0;
+        }
+
+        ul li {
+            list-style: none;
+            display: inline;
+            padding: 23px;
+            font-weight: bolder;
+        }
+
+        ul li a {
+            text-decoration: none;
+            color: var(--textcolor);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><img width="60px"
+                        src="https://tse3.mm.bing.net/th/id/OIP.DoYuESoRecI9l-vyqdrEnQHaE-?pid=Api&P=0&h=180"
+                        alt="image"></li>
+                <li><a href="/">Home</li>
+                <li><a href="/">About</li>
+                <li><a href="/">Services</li>
+                <li><a href="/">Contact Us</li>
+            </ul>
+        </nav>
+    </header>
+</body>
+
+</html>
