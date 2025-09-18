@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Designed a layout.</title>
+    <style>
+        :root {
+            --defwidth: 40%;
+            --defheight: 60%;
+        }
+
+        * {
+            background-color: black;
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            position: relative;
+        }
+        header {
+            height: 3em;
+            background-color: plum;
+            position: sticky;
+            top: 0px;
+            z-index: 1;
+        }
+
+        .boxes {
+            height: 20em;
+            margin: 0.5em;
+            background-color: green;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6%;
+
+        }
+
+        .box1 {
+            height: var(--defheight);
+            width: var(--defwidth);
+            background-color: palevioletred;
+        }
+
+        .box2 {
+            height: var(--defheight);
+            width: var(--defwidth);
+            background-color: rgb(92, 174, 241);
+        }
+
+        .box3 {
+            border: 2px solid white;
+            border-radius: 20px;
+            margin: 2% 10%;
+            padding: 5%;
+            color: white;
+            opacity: 80%;
+            font-family: Georgia, 'Times New Roman', Times, serif;
+        }
+
+        footer {
+            height: 3em;
+            width: 100%;
+            /* full width */
+            background-color: plum;
+            position: relative;
+            bottom: 0;
+            left: 0;
+        }
+
+        .circle {
+            width: 30px;
+            height: 30px;
+            background-color: yellow;
+            border-radius: 50%;
+            position: fixed;
+            right: 15px;
+            bottom: 60px;
+            z-index: 100;
+        }
+    </style>
+</head>
+
+<body>
+    <header></header>
+    <main>
+        <div class="boxes">
+            <div class="box1"></div>
+            <div class="box2"></div>
+        </div>
+        <div class="box3">
+            Welcome to My Web Development Journey.
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum, doloremque.
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cum minima saepe corporis voluptas veritatis sunt consequuntur necessitatibus, harum officiis tenetur aspernatur alias. Voluptate error ut aliquam quibusdam aliquid magni delectus possimus reiciendis, in ea provident soluta architecto rerum vel odit.
+        </div>
+        <div class="circle"></div>
+    </main>
+    <footer></footer>
+
+</body>
+
+</html>
