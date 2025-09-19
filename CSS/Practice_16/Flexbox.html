@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Flexbox</title>
+    <style>
+        .container{
+            border: 2px solid red;
+            display: flex;
+            height: 80vh;
+            /* justify-content: center; */
+            align-items: center;
+            flex-direction: row;
+            /* flex-direction: row-reverse; */
+            flex-wrap: wrap;
+            /* flex-wrap: wrap-reverse; */
+            align-content: center;
+            /* flex-flow: column column-reverse; */
+            /* gap: 30px; */
+            /* row-gap: 40px; */
+            /* column-gap: 10px; */
+            gap: 40px 10px;
+        }
+        .item{
+            flex-grow: 1;
+            height: 92px;
+            width: 92px;
+            background-color: blueviolet;
+            border: 2px solid black;
+            /* margin: 4px; */
+        }
+        .item1{
+            flex-grow: 2;
+        }
+        .order-0{
+            order: 0; /*default order 0 */
+        }
+        .order-1{
+            order: 1;
+        }
+        .order-2{
+            order: 2;
+        }
+        .order-3{
+            order: 3;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <div class="item item1 order-0">0</div>
+            <div class="item order-1">1</div>
+            <div class="item order-2">2</div>
+            <div class="item order-3">3</div>
+            <div class="item">4</div>
+            <div class="item">5</div>
+            <div class="item">6</div>
+            <div class="item">7</div>
+            <div class="item">8</div>
+            <div class="item">9</div>
+            <div class="item">10</div>
+            <div class="item order-1">11</div>
+            <div class="item">12</div>
+            <div class="item">13</div>
+            <div class="item">14</div>
+            <div class="item">15</div>
+            <div class="item">16</div>
+            <div class="item">17</div>
+            <div class="item">18</div>
+            <div class="item">19</div>
+            <div class="item">20</div>
+            <div class="item order-1">21</div>
+            <div class="item order-2">22</div>
+            <div class="item item23 order-3">23</div>
+            
+        </div>
+    </main>
+</body>
+</html>
