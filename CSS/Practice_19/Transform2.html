@@ -10,7 +10,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            background-color: greenyellow;
+            background-color: black;
         }
 
         .container {
@@ -31,10 +31,12 @@
             background-color: blue;
             display: flex;
             justify-content: center;
+            text-align: center;
             align-items: center;
             color: white;
             font-size: small;
             font-weight: bolder;
+
             transition: all 1s ease;
         }
 
@@ -47,8 +49,6 @@
             justify-content: center;
             align-items: center;
             color: white;
-            perspective: 200px;
-
         }
 
         .box1:hover {
@@ -134,12 +134,23 @@
         .box20:hover {
             transform: translateX(0px) translateY(50px) translateZ(50px);
         }
+        .dimension{
+            width: 100vw;
+            background-color: blue;
+            color: white;
+            margin: 10px;
+            font-size: xx-large;
+            font-weight: bolder;
+            display: flex;
+            justify-content: center;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
-
+        <div class="dimension">Transform properties: 2 Dimension View</div>
+       
         <div class="wrapper">
             <div class="box box1">rotate(40deg)</div>
         </div>
