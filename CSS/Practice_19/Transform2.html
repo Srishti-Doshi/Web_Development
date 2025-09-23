@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Transform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: greenyellow;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            align-content: center;
+            gap: 50px;
+            flex-wrap: wrap;
+        }
+
+        .box {
+            width: 150px;
+            height: 100px;
+            border-radius: 5px;
+            background-color: blue;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: small;
+            font-weight: bolder;
+            transition: all 1s ease;
+        }
+
+        .wrapper {
+            width: 150px;
+            height: 100px;
+            border-radius: 5px;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            perspective: 200px;
+
+        }
+
+        .box1:hover {
+            transform: rotate(40deg);
+        }
+
+        .box2:hover {
+            transform: rotate(0.5turn);
+        }
+
+        .box3:hover {
+            transform: rotateX(45deg);
+        }
+
+        .box4:hover {
+            transform: rotateY(45deg);
+        }
+
+        .box44 {
+            transform-origin: left;
+        }
+
+        .box5:hover {
+            transform: rotateZ(45deg);
+        }
+
+        .box6:hover {
+            transform: scale(0.5);
+        }
+
+        .box7:hover {
+            transform: scaleX(0.5);
+        }
+
+        .box8:hover {
+            transform: scaleY(0.5);
+        }
+
+        .box9:hover {
+            transform: scaleZ(0.5);
+        }
+
+        .box10:hover {
+            transform: skew(45deg);
+        }
+
+        .box11:hover {
+            transform: skewX(-45deg);
+        }
+
+        .box12:hover {
+            transform: skewY(45deg);
+        }
+
+        .box13:hover {
+            transform: skewY(20deg) skewX(20deg);
+        }
+
+        .box14:hover {
+            transform: translate(50%);
+        }
+
+        .box15:hover {
+            transform: translate(-50px);
+        }
+
+        .box16:hover {
+            transform: translateX(50px);
+        }
+
+        .box17:hover {
+            transform: translateY(50px);
+        }
+
+        .box18:hover {
+            transform: translateZ(50px);
+        }
+
+        .box19:hover {
+            transform: translate(50px, 50px);
+        }
+
+        .box20:hover {
+            transform: translateX(0px) translateY(50px) translateZ(50px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="wrapper">
+            <div class="box box1">rotate(40deg)</div>
+        </div>
+
+        <div class="wrapper">
+            <div class="box box2">rotate(0.5turn)</div>
+        </div>
+
+        <div class="wrapper">
+            <div class="box box3">rotateX(45deg)</div>
+        </div>
+
+        <div class="wrapper">
+            <div class="box box4">rotateY(45deg)</div>
+        </div>
+
+        <div class="wrapper">
+            <div class="box box4 box44">rotateY(45deg) <br> transform-origin:left</div>
+        </div>
+
+        <div class="wrapper">
+            <div class="box box5">rotateZ(45deg)</div>
+        </div>
+
+        <div class="wrapper">
+            <div class="box box6">scale(0.5)</div>
+        </div>
+
+        <div class="wrapper">
+            <div class="box box7">scaleX(0.5)</div>
+        </div>
+
+        <div class="wrapper">
+            <div class="box box8">scaleY(0.5)</div>
+        </div>
+
+        <div class="wrapper">
+            <div class="box box9">scaleZ(0.5)</div>
+        </div>
+
+        <div class="wrapper">
+            <div class="box box10">skew(45deg)</div>
+        </div>
+
+        <div class="wrapper">
+            <div class="box box11">skewX(45deg)</div>
+        </div>
+
+        <div class="wrapper">
+            <div class="box box12">skewY(-45deg)</div>
+        </div>
+
+        <div class="wrapper">
+            <div class="box box13">skewY(20deg) skewX(20deg)</div>
+        </div>
+
+        <div class="wrapper">
+            <div class="box box14">translate(50%)</div>
+        </div>
+
+        <div class="wrapper">
+            <div class="box box15">translate(-50px)</div>
+        </div>
+
+        <div class="wrapper">
+            <div class="box box16">translateX(50px)</div>
+        </div>
+
+        <div class="wrapper">
+            <div class="box box17">translateY(50px)</div>
+        </div>
+
+        <div class="wrapper">
+            <div class="box box18">translateZ(50px)</div>
+        </div>
+
+        <div class="wrapper">
+            <div class="box box19">translate(50px,50px)</div>
+        </div>
+
+        <div class="wrapper">
+            <div class="box box20">translateX(0px) translateY(50px) translateZ(50px)</div>
+        </div>
+
+    </div>
+</body>
+
+</html>
