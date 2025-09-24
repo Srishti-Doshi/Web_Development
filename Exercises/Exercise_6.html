@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Designing Navbar</title>
+    <style>
+        * {
+            font-family: sans-serif;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .download {
+            width: 110px;
+            height: 30px;
+            padding: 4px;
+            border: 2px solid black;
+            font-weight: bolder;
+            font-size: medium;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        nav {
+            margin: 22px 73px;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .middle ul {
+            margin-top: 30px;
+            display: flex;
+            gap: 33px;
+        }
+
+        .middle ul li {
+            list-style: none;
+            font-size: medium;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+        }
+
+        .right {
+            display: flex;
+            gap: 35px;
+            align-items: center;
+
+        }
+
+        main {
+            text-align: center;
+            width: 60%;
+            padding: 20px 300px;
+        }
+
+        .heading {
+            font-size: xxx-large;
+            padding: 2%;
+        }
+
+        .para {
+            font-size: larger;
+            padding: 1%;
+            margin-bottom: 40px;
+        }
+        main p img{
+            width: 120px;
+            height: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="logo">
+            <img src="logo.png" alt="logo">
+        </div>
+
+        <div class="middle">
+            <ul>
+                <li>
+                    Products
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </li>
+                <li>
+                    Pricing
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </li>
+                <li>
+                    Resources
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </li>
+                <li>
+                    Our Company
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </li>
+            </ul>
+        </div>
+
+        <div class="right">
+            <span class="download">DOWNLOAD</span>
+
+            <span class="english">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6" />
+                    <path
+                        d="M3 12h18M12 3c2.5 2.5 2.5 16.5 0 19M12 3c-2.5 2.5-2.5 16.5 0 19M6 6c4 1 8 1 12 0M6 18c4-1 8-1 12 0"
+                        fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+                </svg>
+                English
+            </span>
+
+            <span class="search">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="20">
+                    <circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="1.6" />
+                    <path d="M20 20l-4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.6"
+                        stroke-linecap="round" />
+                </svg>
+            </span>
+        </div>
+
+    </nav>
+
+    <main>
+        <p class="heading">Download <b>UltraEdit</b> for Windows
+            <img src="star_img.jpeg" alt="">
+        </p>
+        <p class="para">Download and try UltraEdit before you buy it! This download includes the full Windows version of
+            the text editor.</p>
+
+        <span class="button">DOWNLOAD MAC OR LINUX VERSION</span>
+
+        <div class="line">
+            <div class="symbol">UE</div>
+            <h1 class="line1">Download UltraEdit</h1>
+            <p class="line2">v2025.0.0.39 (released 2025-08-06) | Latest changes</p>
+        </div>
+    </main>
+</body>
+
+</html>
