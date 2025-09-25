@@ -7,7 +7,8 @@
     <title>Designing Navbar</title>
     <style>
         * {
-            font-family: sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            letter-spacing: 0.4px;
         }
 
         ul {
@@ -56,29 +57,92 @@
         }
 
         main {
+            position: relative;
+            top: 20px;
             text-align: center;
             width: 60%;
-            padding: 20px 300px;
+            padding: 0px 300px;
         }
 
         .heading {
             font-size: xxx-large;
-            padding: 2%;
+            display: flex;
+            font-weight: 400;
+        }
+
+        b {
+            font-weight: bold;
         }
 
         .para {
-            font-size: larger;
+            position: relative;
+            bottom: 20px;
+            font-size: x-large;
             padding: 1%;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            padding: 0px 0px;
+
+
         }
-        main p img{
+
+        main p img {
+            margin-left: 10px;
             width: 120px;
-            height: 50px;
+            height: 40px;
+            position: relative;
+            top: 20px;
+            border-radius: 5px;
+        }
+
+        .download_button {
+            padding: 15px;
+            background-color: #28b1d7;
+            color: white;
+            font-size: small;
+            font-weight: bolder;
+        }
+
+        .line {
+            position: relative;
+            right: 125px;
+            bottom: 30px;
+            margin-top: 100px;
+            margin-left: 110px;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .line img {
+            height: 85px;
+
+        }
+
+        .line1 {
+            padding: 10px 0px 0px 0px;
+            font-size: x-large;
+            font-weight: 300;
+        }
+
+        .line2 {
+            padding: 25px 0px 0px 0px;
+            font-size: small;
+            font-weight: 300;
+        }
+
+        .container {
+            position: relative;
+            right: 125px;
+            bottom: 30px;
+            margin-top: 100px;
+            margin-left: 110px;
         }
     </style>
 </head>
 
 <body>
+    <!--Design this👉🏻https://bit.ly/UltraEdit-CWH👈🏻 website's Navbar using Flexbox-->
+
     <nav>
         <div class="logo">
             <img src="logo.png" alt="logo">
@@ -142,18 +206,30 @@
     </nav>
 
     <main>
-        <p class="heading">Download <b>UltraEdit</b> for Windows
-            <img src="star_img.jpeg" alt="">
+        <p class="heading">Download&nbsp;<b>UltraEdit&nbsp;</b> for Windows <img src="star_img.jpeg" alt="">
         </p>
         <p class="para">Download and try UltraEdit before you buy it! This download includes the full Windows version of
             the text editor.</p>
 
-        <span class="button">DOWNLOAD MAC OR LINUX VERSION</span>
+        <span class="download_button">DOWNLOAD MAC OR LINUX VERSION</span>
 
         <div class="line">
-            <div class="symbol">UE</div>
+            <img class "symbol src=" logo_part.jpeg" alt="logo_img">
             <h1 class="line1">Download UltraEdit</h1>
-            <p class="line2">v2025.0.0.39 (released 2025-08-06) | Latest changes</p>
+            <p class="line2">&nbsp;v2025.0.0.39 (released 2025-08-06) | Latest changes</p>
+        </div>
+
+        <div class="container">
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
         </div>
     </main>
 </body>
