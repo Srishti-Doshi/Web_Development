@@ -41,11 +41,12 @@ nav {
     align-items: center;
 }
 
-.right {
+nav .right {
     display: flex;
+    flex-direction: row;
     gap: 35px;
+    justify-content: center ;
     align-items: center;
-
 }
 
 main {
@@ -176,9 +177,11 @@ main p img {
 }
 
 .blackbox {
-    height: 600px;
-    background-color: rgb(50, 48, 48);
-    padding: 100px;
+    width: 100%;
+    max-width: 100%;
+    height: 700px;
+    box-sizing: border-box;
+    background-color: rgb(26, 25, 25);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -193,13 +196,12 @@ main p img {
     text-align: center;
     justify-content: center;
     gap: 1.5px;
-    margin: 0px 50px 0px 0px;
-
+    margin: 50px 80px 0px 0px;
 }
 
 .content {
     position: relative;
-    bottom: 50px;
+    bottom: 40px;
     display: flex;
 }
 
@@ -209,14 +211,102 @@ main p img {
     padding: 1px;
 }
 
-.right {
+.blackbox .right {
     margin: 0px 0px 0px 50px;
-    height: 240px;
-    width: 340px;
+    padding-bottom: 30px;
+    height: 250px;
+    width: 350px;
     border-radius: 15px;
     background-color: white;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1px;
+}
+
+.right h2 {
+    font-size: 24px;
+    color: #09bfdb;
+    font-weight: 400;
+}
+
+.right h3 {
+    font-size: medium;
+    font-weight: 350;
+}
+
+.signupbox {
+    box-sizing: border-box;
+    width: 80%;
+    padding: 13px;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    background-color: #09bfdb;
+    box-shadow: 0px 4px 8px #a1f0fc;
+
+}
+
+.emailbox {
+    position: relative;
+    bottom: 10px;
+    width: 80%;
+    height: 20%;
+    border: 1px solid rgb(235, 230, 230);
 }
 
 .bottom {
+    position: relative;
+    top: 50px;
     color: white;
+}
+
+.aboutu{
+    background-color: #f9f9f9;
+    font-size: small;
+    display: flex;
+    justify-content: space-around;
+    padding: 50px 150px 20px 150px;
+}
+input{
+    border-radius: 5px;
+    width: 90%;
+    padding: 6px;
+    margin-bottom: 10px;
+    border: rgb(131, 126, 126);
+}
+.subscribe{
+    box-sizing: border-box;
+    width: 100%;
+    padding: 8px;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    background-color: #09bfdb;
+}
+
+footer .footer_left{
+    display: flex;
+    flex-direction: column;
+}
+footer .footer_left p{
+    font-size: small;
+}
+
+footer .footer_right{
+    text-align: center;
+    padding: 20px;
+    font-size: 30px;
+}
+footer .footer_right a{
+    color: black;
+}
+footer{
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-around;
 }
