@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>display: flow-root property</title>
+    <style>
+        .container {
+            background: lightskyblue;
+        }
+
+        img {
+            float: left;
+            /*  The image is floated left.The container background does not stretch to cover the image.It looks like the image is "leaking outside" the box. */
+            width: 1000px;
+            margin-right: 10px;
+        }
+
+        /*Old Way to fix*/
+        /* .container::after {
+            content: "";
+            display: block;
+            clear: both;
+        } */
+
+        /* New Way */
+        .container {
+            display: flow-root;
+        }
+
+        /*flow-root makes the .container start a new block formatting context (BFC).
+That means: “I will contain my floated children automatically.”
+So the container’s background now covers the floated image properly. */
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img src="https://visualdictionary.org/wp-content/uploads/2020/06/Endangered-Species-2.jpg" alt="">
+        <p>This is some text.</p>
+    </div>
+</body>
+
+</html>
