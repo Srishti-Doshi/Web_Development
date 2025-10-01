@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice CSS Media Queries</title>
+    <style>
+        nav {
+            background-color: beige;
+            padding: 5px;
+        }
+
+        ul {
+            list-style-type: none;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        footer {
+            background-color: beige;
+            padding: 5px;
+        }
+
+        @media (max-width:400px) {
+            ul {
+                flex-direction: column;
+            }
+        }
+
+        ul li {
+            margin: 10px 0;
+        }
+
+        nav {
+            background-color: black;
+            color: white;
+        }
+
+        footer {
+            background-color: black;
+            color: white;
+        }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <ul class="navbar">
+            <li>Home</li>
+            <li>About</li>
+            <li>Services</li>
+            <li>Contact</li>
+        </ul>
+    </nav>
+
+    <main>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum in neque odit provident tenetur voluptates,
+            accusantium magni commodi. Inventore iste fugiat odit eligendi. In inventore ratione quos atque, error ut
+            tempore quibusdam corrupti, iste possimus doloremque. Rem inventore quo corporis excepturi cumque sint
+            libero itaque impedit! Ad magni adipisci provident ratione, nobis quos? Officiis aliquid facere, perferendis
+            repellat veniam ex molestiae porro quibusdam nisi?</p>
+    </main>
+
+    <footer>
+        <p>Thanks!! for reading.</p>
+    </footer>
+
+</body>
+
+</html>
