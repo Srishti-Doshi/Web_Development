@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>background(a shorthand)</title>
+    <style>
+        .container {
+            width: 100vw;
+            height: 100vh;
+            /* background: lightblue; */
+            /* background:url(https://cdn.britannica.com/76/151376-050-13586FE2/monarch-butterfly-flowers-bush.jpg); */
+            /* background: url(https://cdn.britannica.com/76/151376-050-13586FE2/monarch-butterfly-flowers-bush.jpg) no-repeat center/100px 100px; */
+            /* background: lightblue url(https://cdn.britannica.com/76/151376-050-13586FE2/monarch-butterfly-flowers-bush.jpg) repeat center/100px 100px; */
+            /* background: url(https://cdn.britannica.com/76/151376-050-13586FE2/monarch-butterfly-flowers-bush.jpg) no-repeat center/100px 100px; */
+            /* background:skyblue url(https://cdn.britannica.com/76/151376-050-13586FE2/monarch-butterfly-flowers-bush.jpg) no-repeat center/100px 100px; */
+            background: pink url("maplee.png") repeat-y left /40px 40px;
+
+
+            /*auto → default (shows image in original size).
+            cover → stretches the image to cover the whole element.
+            contain → fits the whole image inside (may leave empty space).
+            width height → custom size (like 100px 50px).*/
+
+        }
+
+        .box {
+            margin-left: 200px;
+            width: 200px;
+            height: 200px;
+            background: rgb(235, 135, 230) url(https://cdn.britannica.com/76/151376-050-13586FE2/monarch-butterfly-flowers-bush.jpg) no-repeat center/contain scroll;
+        }
+
+        .box2 {
+            margin: 200px;
+            width: 200px;
+            height: 200px;
+            overflow: scroll;
+            background: lightgreen url("maplee.png") no-repeat left/50px 50px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- 
+selector {
+  background: [color] [image] [position] / [size] [repeat] [attachment] [origin] [clip];
+}
+
+background-color
+background-image
+background-position
+background-size: 
+background-repeat
+background-origin
+background-clip
+background-attachment 
+-->
+
+    <div class="container">
+        <div class="box"></div>
+        <div class="box2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio perspiciatis provident,
+            atque odit ut sint dignissimos eaque labore velit minus aliquid cumque tempore ex quo. Inventore quam dolor
+            rem. Aliquam iste natus vero, aperiam cum eos, dicta temporibus consequatur non optio qui laborum cumque in
+            tempora magnam beatae? Exercitationem, deserunt.</div>
+    </div>
+</body>
+
+</html>
