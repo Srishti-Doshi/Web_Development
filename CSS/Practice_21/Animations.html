@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Animations</title>
+    <style>
+        .container {
+            background-color: rgb(14, 133, 133);
+            height: 80vh;
+            width: 30vw;
+        }
+
+        .box {
+            /* background-color: aqua; */
+            height: 45px;
+            width: 34px;
+
+            /* animation: name duration timing-function delay iteration-count direction fill-mode; */
+
+            /* animation-name: srishti_ka_animation;
+            animation-duration: 2s;
+            animation-iteration-count: infinite;
+            animation-timing-function: ease-incubic-bezier(0, 0.12, 0.7, 0.96);
+            animation-delay: 0.5s;
+            animation-direction: alternate-reverse;
+            animation-play-state: paused; */
+
+            /* animation: name duration timing-function delay iteration-count direction fill-mode; */
+
+            /* animation: srishti_ka_animation 3s ease-in-out 2s 1; */
+
+            /* animation: srishti_ka_animation 3s ease-in-out 2s 1 forwards; */
+
+            animation: srishti_ka_animation 3s ease-in-out 2s 1 forwards, sri 3s ease-in-out 3s 1;
+
+        }
+
+        @keyframes srishti_ka_animation {
+            from {
+                background-color: red;
+            }
+
+            to {
+                background-color: yellow;
+                transform: translateX(1000px);
+            }
+        }
+
+        @keyframes sri {
+            0%{
+                transform: rotate(100deg);
+            }
+            20%{
+                transform: rotate(200deg);
+            }
+            50%{
+                transform: rotate(220deg);
+            }
+            80%{
+                transform: rotate(300deg);
+            }
+            100%{
+                transform: rotate(310deg);
+            }
+            
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="box">Box</div>
+    </div>
+</body>
+
+</html>
