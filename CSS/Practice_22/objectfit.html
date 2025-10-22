@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS object Fit and position property</title>
+    <style>
+        .container{
+            /* height: 634px;
+            width: 688px; */
+            width: 466px;
+            height: 488px;
+            border: 2px solid black;
+            background-color: azure;
+        }
+
+        img{
+            width: 466px;
+            height: 488px;
+
+            object-fit: cover;
+            object-position: 20px 40px;
+
+            /* object-position: top right; */
+            /* object-position: bottom left; */
+            /* object-fit: contain; */
+            /* object-fit: fill; */
+            /* object-fit: scale-down; */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://www.pixelstalk.net/wp-content/uploads/2016/07/Download-Free-Pictures-3840x2160.jpg" alt="">
+    </div>
+</body>
+</html>
