@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bouncing Ball</title>
+    <style>
+        .ground {
+            background-color: rgb(23, 162, 23);
+            width: 90vw;
+            height: 60vh;
+            border: 2px solid green;
+
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-end;
+            overflow: hidden;
+            box-shadow: inset 0 -24px 21px -4px rgb(10, 80, 10);
+
+        }
+
+        .ball_wrapper {
+            animation: bounceX 4s linear infinite alternate;
+        }
+
+        .ball {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgb(242, 234, 234);
+            animation: bounceY 0.4s cubic-bezier(0.4, 0.56, 0.5, 0.9) infinite alternate;
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
+
+        }
+
+        @keyframes bounceY {
+            from {
+                transform: translateY(0);
+                height: 55px;
+            }
+
+            to {
+                transform: translateY(-200px);
+                height: 65px;
+            }
+        }
+
+        @keyframes bounceX {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(calc(90vw - 50px));
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ground">
+        <div class="ball_wrapper">
+            <div class="ball"></div>
+        </div>
+    </div>
+</body>
+
+</html>
