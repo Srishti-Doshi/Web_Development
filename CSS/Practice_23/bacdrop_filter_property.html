@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS:backdrop-filter property</title>
+    <style>
+        .background-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: url("https://wallpaperaccess.com/full/3074103.jpg");
+            background-size: cover;
+            background-position: center;
+        }
+
+        .frosted-box {
+            width: 400px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+            background-color: rgba(255, 255, 255, 0.15);
+
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background-container">
+        <div class="frosted-box">
+            <h2>Frosted Glass Effect</h2>
+            <p>This box blurs the content behind it.</p>
+        </div>
+    </div>
+</body>
+
+</html>
