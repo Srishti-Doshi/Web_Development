@@ -1,6 +1,6 @@
 // The sort() function in JavaScript is used to arrange the elements of an array in a specific order — either alphabetical or numerical, ascending or descending.
 // It changes (mutates) the original array — it doesn’t create a new one.
-//ChatGPT said:
+
 
 //When you call sort() without any compare function, JavaScript automatically converts each element into a string and compares them character by character based on Unicode values (the character encoding order).
 let fruits = ["banana", "apple", "mango"];
