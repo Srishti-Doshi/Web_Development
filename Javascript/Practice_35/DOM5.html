@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .newClass{
+            background-color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="box">I am a box inside container</div>
+    </div>
+    <script>
+        let cont = document.querySelector(".container");
+        cont.insertAdjacentHTML("afterend", "I am inserted at afterend");
+
+        let var1 = document.querySelector(".container");
+        var1.insertAdjacentHTML("beforebegin", "I am inserted at beforebegin");
+
+        let var2 = document.querySelector(".container");
+        var2.insertAdjacentHTML("beforeend", "I am inserted at beforeend");
+
+        let var3 = document.querySelector(".container");
+        var3.insertAdjacentHTML("afterbegin", "I am inserted at afterbegin");
+
+        //Node remove
+        // document.querySelector(".box").remove();
+
+        console.log(document.querySelector(".container").classList);
+        console.log(document.querySelector(".container").className);
+        document.querySelector(".container").classList.add("newClass");
+        console.log(document.querySelector(".container").classList);
+        document.querySelector(".container").classList.remove("newClass");
+        console.log(document.querySelector(".container").classList);
+
+        // document.querySelector(".container").classList.toggle("newClass");
+    </script>
+</body>
+
+</html>

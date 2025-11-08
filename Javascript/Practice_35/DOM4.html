@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container">
+        <div data-createdBy="tinka" data-conceptBy="puung" style="display: flex" class="box">Hey I am a box</div>
+        <div class="box">Hey I am a box</div>
+    </div>
+    <script>
+        //append
+        let div = document.createElement("div");
+        div.innerHTML = "I have been inserted <b>by tinka</b>";
+        div.setAttribute("class", "created");
+
+        document.querySelector(".container").append(div);
+
+        //prepend
+        let div1 = document.createElement("div");
+        div1.innerHTML = "I am div1 and I used prepend";
+        div.setAttribute("class","div1");
+        document.querySelector(".container").prepend(div1);
+
+        //before
+        let div2 = document.createElement("div");
+        div2.innerHTML = "I am div2 and I used before";
+        div2.setAttribute("class", "div2");
+        document.querySelector(".container").before(div2);
+
+        //after
+        let div3 = document.createElement("div");
+        div3.innerHTML = "I am div3 and I used after";
+        div3.setAttribute("class","div3");
+        document.querySelector(".container").after(div3);
+
+        //append
+        let div5 = document.createElement("div");
+        div.innerHTML = "I am div5 and I am appended";
+        div.setAttribute("class", "div5");
+        document.querySelector(".container").append(div5);
+
+        //replaceWith
+        let div4 = document.createElement("div");
+        div4.innerHTML = "I am div 4 and I  have been replacewith div5";
+        div4.setAttribute("class", "div4");
+        document.querySelector(".div5").replaceWith(div4);
+    </script>
+</body>
+
+</html>
