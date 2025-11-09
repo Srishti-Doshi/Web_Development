@@ -1,0 +1,46 @@
+<!-- 1)Create a navbar and change the color of its first element to red. -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar</title>
+</head>
+<style>
+    body{
+        background-color: rgba(0, 0, 255, 0.527);
+    }
+    nav{
+        margin: 20px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        background-color: black;
+        color: white;
+        padding: 10px;
+        font-weight: bold;
+        font-family: Georgia, 'Times New Roman', Times, serif;
+    }
+    .company{
+        font-size: xx-large;
+        font-weight: bolder;
+        margin: 5px 15px 5px 15px;
+    }
+</style>
+<body>
+    <nav>
+        <div class="company">Company</div>
+        <div class="options"></div>
+        <div class="home">Home</div>
+        <div class="about">About</div>
+        <div class="gallary">Gallary</div>
+        <div class="contact">Contact</div>
+        <div class="others">Others <b>▾</b></div>
+    </nav>
+    <script>
+        let elem = document.getElementsByTagName("nav")[0];
+        elem.firstElementChild.style.color = "red";
+    </script>
+</body>
+</html>

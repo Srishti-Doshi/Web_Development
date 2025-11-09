@@ -1,0 +1,43 @@
+<!-- 5)Which of the following is used to look for the farthest ancestor that matches a given CSS selector?
+(a) matches
+(b) closest
+(c) contains
+(d) none of these -->
+
+<!-- Answer: closest() finds the nearest ancestor, not the farthest.
+
+matches() only checks if the current element matches a selector.
+
+contains() checks if one node contains another (parent → child), not for ancestor selection.
+
+There is no built-in DOM method to find the farthest ancestor matching a selector. -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="a1">
+        <div class="a2">
+            <div class="a3">
+                <div class="a4"></div>
+                <div class="a44"></div>
+            </div>
+        </div>
+        <div class="a22"></div>
+    </div>
+    <script>
+        let four = document.querySelector(".a4")
+        let two = document.querySelector(".a2")
+        console.log(four.matches(".a2")) //false
+        console.log(four.closest(".a2")) //<div class="a2">…</div>
+        console.log(four.contains(two))  //false
+    </script>
+</body>
+
+</html>

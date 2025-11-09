@@ -1,0 +1,36 @@
+<!-- 3)Create an element with 3 children. Now change the color of the first and last element to green. -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .element{
+            display: flex;
+            border: 4px dashed black;
+            padding: 10px;
+        }
+        .c{
+            width: 60px;
+            height: 40px;
+            border: 2px solid black;
+            margin: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="element">
+        <div class="c child1">Child1</div>
+        <div class="c child2">Child2</div>
+        <div class="c child3">Child3</div>
+    </div>
+    <script>
+        let elem = document.getElementsByClassName("element")[0];
+        elem.firstElementChild.style.backgroundColor = "lightgreen";
+        elem.lastElementChild.style.backgroundColor = "lightgreen";
+    </script>
+</body>
+</html>

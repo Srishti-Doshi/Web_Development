@@ -1,0 +1,46 @@
+<!-- 2)Create a table without <tbody>. Now use the “view page source” button to check whether it has a <tbody> or not. -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table</title>
+    <style>
+
+        table,
+        th,
+        td {
+            border: 2px solid black;
+
+        }
+    </style>
+</head>
+
+<body>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Course</th>
+            <th>Subject</th>
+            <th>Marks</th>
+        </tr>
+        <tr>
+            <td>Tinka</td>
+            <td>123</td>
+            <td>Python</td>
+            <td>100</td>
+        </tr>
+        <tr>
+            <td>Puuung</td>
+            <td>87</td>
+            <td>Python</td>
+            <td>100</td>
+        </tr>
+    </table>
+</body>
+
+</html>
+
+<!-- Browser automatically adds <tbody> in the DOM, but it does not appear in “View Page Source”; it only appears in the Inspector’s Elements panel. -->
