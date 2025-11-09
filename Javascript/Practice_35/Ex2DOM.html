@@ -4,10 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dynamic Website Builder</title>
+    <style>
+        .card {
+            width: 100vw;
+            height: 20vh;
+            background-color: black;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .image{
+            position: relative;
+        }
+        .image img {
+            width: 200px;
+            border-radius: 10px;
+            margin: 20px 10px 5px 20px;
+        }
+
+        .image .capsule{
+            position: absolute;
+            background-color: #242020;
+            color: white;
+            padding: 3px;
+            border-radius: 6px;
+            opacity: 0.9;
+            font-size: 14px;
+            bottom: 13px;
+            right: 14px;
+            z-index: 10;
+        }
+
+        .text h1 {
+            color: white;
+            font-size: 15px;
+            font-family: sans-serif;
+        }
+
+        .text p {
+            color: rgba(255, 255, 255, 0.771);
+            font-size: 10px;
+            font-family: sans-serif;
+        }
+    </style>
 </head>
 <body>
-    <div class="container"></div>
+    <div class="container">
+        <div class="card">
+            <div class="image">
+                <img src="https://i.ytimg.com/vi/tVzUXW6siu0/hqdefault.jpg?sqp=-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLACwWOixJVrKLFindK92kYMgTcQbw"
+                    alt="">
+                <div class="capsule">31:06</div>
+            </div>
 
+            <div class="text">
+                <h1>Introduction to Backend | Sigma Web Dev video #2</h1>
+                <p>CodeWithHarry . 727K views . 2 months ago</p>
+            </div>
+        </div>
+    </div>
     <script src="Ex2DOM.js"></script>
 </body>
 </html>
