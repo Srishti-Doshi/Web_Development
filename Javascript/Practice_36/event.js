@@ -14,7 +14,7 @@ button.addEventListener("contextmenu", ()=>{
 
 document.addEventListener("keydown", (e)=>{  //2nd argument -> event object
     // console.log(e)
-    console.log(e.key, e.keyCode)
+    console.log(e, e.key, e.keyCode)
 })
 //List of all mouse events
 // https://developer.mozilla.org/en-US/docs/Web/API/Element#mouse_events
