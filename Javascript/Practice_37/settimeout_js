@@ -1,0 +1,20 @@
+console.log("one");
+console.log("two");
+console.log("three");
+
+setTimeout(()=>{
+    console.log("Helloooo");
+}, 1000)
+
+
+
+function hello(){
+    console.log("Hello");
+}
+
+setTimeout(hello, 0);  // function_name , time in milliseconds(1s = 1000ms)
+
+
+console.log("four");
+console.log("five");
+console.log("six");
