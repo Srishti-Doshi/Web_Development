@@ -18,7 +18,19 @@ function getData(dataId) {
 
 // getAllData();
 
-(async function (){
+
+//IIFE: Immediately Invoked Function Expressions
+
+// (async function (){
+//     console.log("getting data1.....");
+//     await getData(1);
+//     console.log("getting data2.....");
+//     await getData(2);
+//     console.log("getting data3.....");
+//     await getData(3);
+// })();
+
+(async ()=>{
     console.log("getting data1.....");
     await getData(1);
     console.log("getting data2.....");
