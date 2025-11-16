@@ -33,6 +33,6 @@ function createCard(title, cName, views, monthsOld, duration, thumbnail){
 
 }
 
-createCard("Introduction to Frontend | Sigma Web Dev video #2", "CodeWithHarry", 56000, 7, "31:22", "https://i.ytimg.com/vi/tVzUXW6siu0/hqdefault.jpg?sqp=-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLACwWOixJVrKLFindK92kYMgTcQbw");
+createCard("Introduction to CSS | Sigma Web Dev video #2", "CodeWithHarry", 560000, 7, "21:22", "https://i.ytimg.com/vi/tVzUXW6siu0/hqdefault.jpg?sqp=-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLACwWOixJVrKLFindK92kYMgTcQbw");
 
-createCard("Introduction to Backend | Sigma Web Dev video #3", "CodeWithHarry", 56000000, 7, "31:22", "https://i.ytimg.com/vi/tVzUXW6siu0/hqdefault.jpg?sqp=-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLACwWOixJVrKLFindK92kYMgTcQbw");
+createCard("Introduction to JavaScript | Sigma Web Dev video #3", "CodeWithHarry", 8600000000, 7, "51:22", "https://i.ytimg.com/vi/tVzUXW6siu0/hqdefault.jpg?sqp=-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLACwWOixJVrKLFindK92kYMgTcQbw");
