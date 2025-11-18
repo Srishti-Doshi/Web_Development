@@ -1,0 +1,71 @@
+How Promise Chaining Works Internally
+
+Promise chaining looks like this:
+
+task1()
+  .then(task2)
+  .then(task3)
+  .then(task4);
+
+
+But what actually happens internally is VERY simple — just 2 things.
+
+
+when you do 
+
+let p2 = p1.then(task2)
+
+avaScript internally does:
+
+✔ Step 1: Create a NEW promise (p2)
+
+Yes — EVERY .then() creates a brand new Promise object.
+
+So we get a chain like:
+
+p1 → p2 → p3 → p4
+
+✔ Step 2: When p1 resolves:
+
+JavaScript takes the value of p1
+
+Sends it into task2
+
+The return value of task2 becomes the resolved value of p2
+
+That’s the entire concept.
+
+Promise.resolve(10)
+  .then(x => x + 5)      // returns 15 → next promise gets 15
+  .then(y => y * 2);     // returns 30
+
+
+This internal mechanism:
+Removes callback hell
+Makes code linear
+Allows async/await to work
+
+
+How Errors Flow in Promise Chains (super simple)
+If ANY .then() throws an error or returns a rejected Promise,
+the chain SKIPS all remaining .then() and jumps to the next .catch().
+
+
+Promise.resolve(10)
+  .then(x => x + 5)          // returns 15
+  .then(y => { throw "Error!"; })
+  .then(z => console.log("Won't run"))
+  .catch(err => console.log("Caught:", err));
+
+First .then() → fine
+Second .then() → throws error
+Third .then() → skipped
+.catch() → runs immediately
+
+When an error occurs:
+The promise becomes rejected
+The rejection propagates down the chain
+It stops only at the first .catch()
+
+Throw inside .then() = reject()
+These two are the SAME
