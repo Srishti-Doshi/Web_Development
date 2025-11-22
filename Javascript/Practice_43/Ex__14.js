@@ -23,10 +23,36 @@ let arr = ["Initializing Hacking", "Reading your files", "Password files detecte
                 }, 5000);
 
                 resolve();
-            }, 1000 * (Math.random() * 6) + 1)
+            }, 2000 * (Math.random() * 6) + 1)
         })
     }
 })();
+
+// (async function hackerTerminal() {
+//     for (let i = 0; i < arr.length; i++) {
+//         await new Promise((resolve) => {
+//             setTimeout(() => {
+//                 setTimeout(() => {
+//                     txt.innerHTML = arr[i];
+//                 }, 1000);
+//                 setTimeout(() => {
+//                     txt.innerHTML = arr[i] + ".";
+//                 }, 2000);
+//                 setTimeout(() => {
+//                     txt.innerHTML = arr[i] + ". .";
+//                 }, 3000);
+//                 setTimeout(() => {
+//                     txt.innerHTML = arr[i] + "..";
+//                 }, 4000);
+//                 setTimeout(() => {
+//                     txt.innerHTML = arr[i] + "...";
+//                 }, 5000);
+
+//                 resolve();
+//             }, 1000 * (Math.random() * 6) + 1)
+//         })
+//     }
+// })();
 
 
 // (async function Dynamic_msgs() {
