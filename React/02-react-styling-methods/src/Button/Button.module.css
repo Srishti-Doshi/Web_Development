@@ -1,0 +1,11 @@
+.button{
+    background-color: rgb(41, 41, 175);
+    color: aliceblue;
+    margin: 10px;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* Module CSS styling is preferrred for individual components that have their unique style  */
