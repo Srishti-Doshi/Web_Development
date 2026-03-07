@@ -1,0 +1,192 @@
+const → most used, value reference should not change
+
+let → modern, block scope, used when value changes
+
+var → old style, not block scope, avoid using
+
+Use const by default
+Use let only when value changes
+Avoid var
+
+const with primitive → value cannot change
+
+const with object → reference cannot change
+                     but object properties can change
+
+
+
+
+Arrays are also objects in JavaScript.
+
+
+
+
+=== checks reference equality for objects.
+
+For arrays and objects:assignment copies the reference not the actual data
+
+numbers are copied by value, not reference.
+
+
+
+
+React apps = small components combined together
+
+
+
+
+
+Precedence	Operator	Example
+Highest	    ()	        (2 + 3) * 4
+High	    ++ --	    i++
+High	    * / %	    3 * 4
+Medium	    + -	        2 + 3
+Lower	    < > <= >=	a > b
+Lower	    === !==	    a === b
+Lower	    &&	        true && false
+Lower	    `	
+Very low	=	        x = 5
+
+
+
+
+
+
+Conditional Rendering
+
+// conditional rendering = allows you to control what gets rendered in your applications based on certain conditions (show, hide, or change components)
+
+// Conditional rendering means showing different UI based on a condition in React.
+
+Special behavior of && in JavaScript
+In JavaScript, && does not always return true/false.
+
+Rule:
+true && value  → returns value
+false && value → returns false
+
+Why React developers use this
+To show something only if a condition is true.
+
+Example:
+{isLoggedIn && <p>Welcome</p>}
+
+ternary operator in JavaScript:
+condition ? value_if_true : value_if_false
+
+Why React uses this a lot
+Because JSX cannot directly use if–else inside HTML.
+
+
+
+
+JavaScript uses camelCase.
+
+In CSS:
+background-color
+border-radius
+
+In React (JS object):
+backgroundColor
+borderRadius
+
+
+
+
+
+CSS styling in React
+1. Inline CSS : CSS properties → inside JS object → passed to style attribute.
+
+2. External CSS : CSS file → imported into component → className applied to elements.
+      Button.css → import './Button.css' → className="button"
+
+3. CSS Modules : CSS Modules are a way to write CSS that is scoped to a specific component.
+    import styles from "./Button.module.css";
+    Here styles becomes a JavaScript object.
+
+External CSS → className="button"
+CSS Module → className={styles.button}
+
+
+
+
+Props = properties
+Props are used to pass data from one component to another.
+Think of them like function arguments.
+Parent Component → sends props → Child Component
+with the help of props Same component used multiple times with different data. => Reusability of components
+Props are read-only. => You should not change props inside a component.
+
+Step-by-step
+1️⃣ Parent sends a prop: name = "Srishti"
+2️⃣ Inside the component, React collects props into an object: 
+props = {
+  name: "Srishti"
+}
+3️⃣ JSX runs the JavaScript:{props.name}
+So the value becomes:Srishti
+4️⃣ Final output on the page:<h2>Srishti</h2>
+
+props is always an object.
+
+Cleaner modern way (destructuring)
+
+Instead of writing:
+
+function Card(props){
+  return <h2>{props.name}</h2>;
+}
+
+Developers often write:
+
+function Card({name}){
+  return <h2>{name}</h2>;
+}
+
+
+
+Rule for props in JSX
+
+Strings → use quotes ""
+Everything else → use {}
+
+"string" → quotes
+number → {}
+boolean → {}
+object → {}
+array → {}
+JS expression → {}
+
+Props are read-only data that a parent component passes to a child component in React.
+
+PropTypes are used to check the type of props passed to a React component. -> good for debugging -> doesn't stop the application from running just issue a warning.-> good practice when using props but depreceated now
+
+Default props are fallback values used when a prop is NOT passed from the parent component. So if the parent forgets to send a prop → React uses the default value. defaultProps is now considered legacy for function components. Legacy means: old approach that is still supported, but not recommended for modern use.
+
+defaultProps → legacy
+Default parameters → modern
+
+
+<> </> is called a React Fragment.
+It allows multiple elements without adding extra HTML.
+Without fragment you would need:
+<div>
+</div>
+But fragments avoid unnecessary DOM elements.
+
+Rendering → React runs component
+
+useState → store UI data
+
+useEffect → run code after render
+
+useRef → store value without re-render + DOM access
+
+useContext → share data globally between components
+
+
+Hook	        Purpose                                             Example
+useState	    store UI data                                       Store dark mode toggle
+useEffect	    run side effects                                    Fetch data from API when page loads
+useRef	      access DOM / store value without re-render          Focus an input field
+useContext	  share data globally                                 Share logged-in user across many components
