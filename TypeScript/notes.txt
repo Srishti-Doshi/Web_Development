@@ -1,0 +1,56 @@
+TYPESCRIPT DOMINATION
+
+TypeScript => improved version of JavaScript and has more features than JS
+TypeScript : provides Type Safety
+
+
+The below code is valid in JS but invalid in TS:
+var x = 22;
+var y = 23;
+var x = 23;
+
+JS was created in 15 days and has many issues , missing features and has no type safety
+var a = 12;
+a = "sri";
+
+Setting up environment for TS
+Need:   1.Browser(Brave, Chrome)
+        2.Nodejs(helps : TS code compiles into JS code)
+        3.TypeScript => install ts compiler(globally for eveywhere at laptop)
+                    in terminal run "npm i typescript -g"
+                    if don't work use "sudo npm i typescript -g"
+
+                    use "tsc filename.ts" to run the TS file and it will compile to a JS file
+
+        4.VS code and its Extensions
+                    ESLint
+                    JavaScript and TypeScript Nightly
+                    Live Server
+                    Material Icon Theme
+                    Prettier - Code formatter
+                    Prettier ESLint
+                    Pretty TypeScript Errors
+
+
+tips: ctrl + backtick opens Terminal
+
+typescript Setup
+
+    Setting up a TypeScript project 
+        => create a ts file
+
+    Configuring tsconfig.json 
+        => in tsconfig file we do settings like (var a; not used variables, function that returns null etc) are to treat as erors
+        => run "tsc --init" or "npx tsc --init" to get tsconfig file
+
+    Compiling TypeScript
+        => run "tsc" or "tsc filename.ts"
+        => run "tsc --watch" for continuation compilation of code as writing and saving
+
+npm --v
+node --v
+tsc --v
+
+name of file is in italic => save it
+
+auto save option
