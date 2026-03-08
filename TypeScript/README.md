@@ -20,7 +20,7 @@ The goal of this repository is to understand TypeScript concepts step-by-step an
 ---
 
 ## 📁 Structure
-
+```
 TypeScript/
 │
 ├── src/
@@ -74,7 +74,7 @@ TypeScript/
 ├── package.json
 ├── tsconfig.json
 └── README.md
-
+```
 
 ---
 
