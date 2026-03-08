@@ -54,3 +54,51 @@ tsc --v
 name of file is in italic => save it
 
 auto save option
+
+DataType
+    number => 12, 12.3, 12.23553
+    character => c, a, d
+    string => apple, Srishti
+    boolean => true, false
+
+In TypeScript
+    primitives and reference
+        a = 12
+        b = a
+        b + 2
+        b => 14
+        a => 12
+
+        a = [1,2,3,4,5]
+        b = a
+        b => remove last number => [1,2,3,4]
+        a => [1,2,3,4]
+
+        [] {} () => type => reference => any change leads to change in parent
+
+        no brackets => primitive
+
+        12      => primtive
+        Prince  => primtive
+        true    => primtive
+        []      => reference
+        {}      => reference
+        "apple" => primtive
+        false   => primtive
+        12.34   => primtive
+        ()      => reference
+        var a = true => primitive
+        var [2,4]    => reference
+
+        primitive => can be copied directly
+        reference => cannot be copied directly, other ways
+
+        var a = [1,2,3,4]
+        var b = a => here b does not copy a , it has a reference of a 
+
+Basic types
+    Primitive types(number, string, boolean)
+    Arrays
+    Tuples
+    Enums
+    Any, Unknown, Void, Null, Undefined, Never
