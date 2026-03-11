@@ -37,34 +37,3 @@ let student4: Student = {
     marks: 87
 };
 
-
-//Interface vs Type alias
-
-//Interface
-interface Shape {
-    name: string;
-    area: number;
-    color: string;
-}
-
-let shape1: Shape = {
-    name : "circle",
-    area : 400,
-    color : "blue"
-}
-
-
-//Type Alias
-type ShapeType = {
-    name: string;
-    area: number;
-    color: string;
-}
-
-let shape2: ShapeType = {
-    name : "circle",
-    area : 400,
-    color : "blue"
-}
-
-// both interface and type alias may look same while using but are different
