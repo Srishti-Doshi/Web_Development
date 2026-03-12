@@ -1,0 +1,12 @@
+export function addPayment(val: number){
+    console.log(val)
+}
+
+export function getDetails(val: number){
+    console.log(val)
+}
+
+
+export default class Payment{
+    constructor(public price: number) { }
+}
