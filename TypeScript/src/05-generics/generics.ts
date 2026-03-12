@@ -47,3 +47,64 @@ myIdentity("hi") // T -> string
 // result2.toUpperCase()  // does not works : WARNING
 
 result2.toString() //works
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// hum ek function ko use karte bata sakte hai ki function argument ko kis type se treat kare
+
+
+// T => Template (Template classes)
+
+function buy<T>(a:T){
+
+}
+
+buy<string>("hello")  // T-> string
+buy("hello") // TS infer T -> string
+
+
+
+function play<P>(x:P){
+
+}
+
+play<number>(2)  // explicit generic P -> number
+play(2)  //TS infer  P -> number
+
+
+
+
+function buffet<T>(a: T, b: number){ }
+buffet<string>("halwa", 4)
+
+
+
+function log<T>(val: T){
+    console.log(val);
+}
+
+log(12);
+
+log("puuung")
+
+
+
+// "hey" => type string => value string literal
+
+function fun<T>(a: T, b: T): T {
+    return "hey" as T;  //assertion
+    // return "hey";  
+}
+
+fun<string>("hey", "hello");
