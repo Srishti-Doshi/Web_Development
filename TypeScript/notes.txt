@@ -39,7 +39,7 @@ typescript Setup
     Setting up a TypeScript project 
         => create a ts file
 
-    Configuring tsconfig.json 
+    Configuring tsconfig.json (rules for compiling)
         => in tsconfig file we do settings like (var a; not used variables, function that returns null etc) are to treat as erors
         => run "tsc --init" or "npx tsc --init" to get tsconfig file
 
@@ -103,3 +103,80 @@ Basic types
     Enums
     Any, Unknown, Void, Null, Undefined, Never
 
+
+to run use "node app.js"
+
+
+
+
+
+
+export {}
+   ↓
+makes the file a module
+   ↓
+prevents global variable conflicts
+
+This file is a module.
+Do NOT treat it as a global script.
+
+
+
+var → one shared variable
+let → new variable per block/iteration
+
+
+var => function scope, can be redeclare, can be reassign
+
+let => block scope, cannot be redeclare, can be reassign
+
+const => block scope, cannot be redeclare, cannot be reassign, must be initialized
+
+
+
+Number	number	Double precision 64-bit floating point values
+String	string	Sequence of Unicode characters
+Boolean	boolean	Logical values, true and false
+Void	void	For functions that do not return a value
+Null	null	Intentional absence of an object value
+Undefined	undefined	Value given to uninitialized variables
+Symbol	symbol	Unique and immutable primitive for unique object keys
+Object	object	Instances of classes, arrays, functions, etc.
+Never	never	Values that never occur (e.g., a function that always throws)
+
+for (let key in object){}
+for ..in => give indexes (specially useful for objects) => value : object[key]
+
+
+for (let value of array){}
+for ... of => give values (specially useful for arrays)
+
+
+
+Parameter Order 
+1. Required
+2. Optional
+3. Default
+
+Required → Optional (strict)
+Default parameters : Can be anywhere (but better to keep at end)
+
+
+
+
+
+IoC 
+1. Install package
+Run this in terminal: npm install typedi reflect-metadata
+
+2. Import Service
+At top of your file: import { Service } from "typedi";
+
+3. Add this in your main file (VERY IMPORTANT)
+import "reflect-metadata";
+
+4. Enable in tsconfig.json
+{
+  "experimentalDecorators": true,
+  "emitDecoratorMetadata": true
+}
