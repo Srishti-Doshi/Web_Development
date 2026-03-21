@@ -1,0 +1,74 @@
+Portfolio (collection of your investments)
+Portfolio (clist of Assets)
+
+We are building a portfolio dashboard and our data is Financial Assets (Apple Stock, Bitcoin, Gold, Tesla,...)
+
+One Asset represents an investment item in portfolio
+
+
+Data Flow
+
+App → AssetList : props (assets array)
+App → AssetCard : props (via AssetList)
+AssetForm → App : function (onAdd)
+AssetCard → App : function (onRemove)
+
+
+
+
+App
+
+✔ Stores assets state using useState<Asset[]>
+✔ Has:
+
+handleAdd → adds new asset  
+handleRemove → removes asset using symbol  
+
+✔ Passes:
+
+AssetEditor → onAdd (handleAdd)  
+AssetList → assets + onRemove (handleRemove)
+
+
+AssetEditor
+
+✔ Handles input state (local)
+✔ Controlled inputs (value + onChange)
+✔ Creates newAsset
+✔ Calls:
+
+onAdd(newAsset) → App
+
+✔ Resets fields
+
+
+
+
+AssetList
+
+✔ Receives:
+
+assets (array)
+onRemove (function)
+
+✔ Uses:
+
+map() → loop
+
+✔ Sends each item to:
+
+
+
+
+AssetCard
+AssetCard
+
+✔ Shows single asset
+✔ Has:
+
+asset (data)
+onRemove (function)
+
+✔ On click:
+
+onRemove(symbol) → App
