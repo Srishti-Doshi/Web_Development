@@ -14,7 +14,7 @@ class CafeManager{
     private static instance: CafeManager;
     private constructor(){};
 
-    static getInstance():CafeManager{
+     static getInstance():CafeManager{
         if(!CafeManager.instance){
             CafeManager.instance = new CafeManager();
         }
