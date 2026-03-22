@@ -1,0 +1,217 @@
+NPTEL IIT Ropar Virtual Internship
+Case Study Submission
+
+Title: MongoDB Transactions
+Case Study: FinTrust Wallet – Secure Money Transfers
+
+
+1. Introduction
+
+FinTrust is a digital wallet platform where users can transfer money, make payments, and receive refunds instantly. Since the system deals with financial data, correctness and reliability are critical.
+
+For example, when Alice transfers $100 to Bob:
+
+- Alice’s balance must decrease by $100
+- Bob’s balance must increase by $100
+- A transaction record must be created
+
+If any one of these steps fails, none of them should be saved. The system must never leave the database in an inconsistent state.
+
+To solve this, MongoDB provides multi-document transactions with ACID guarantees.
+
+
+------------------------------------------------------------
+
+2. Understanding ACID in MongoDB
+
+ACID stands for:
+
+Atomicity  
+Consistency  
+Isolation  
+Durability  
+
+Atomicity:
+All operations inside a transaction either succeed together or fail together.
+
+Consistency:
+After the transaction completes, the database remains in a valid state. For example, balances cannot become negative if business rules prevent it.
+
+Isolation:
+Other users do not see partial updates. Changes become visible only after commit.
+
+Durability:
+Once committed, the changes survive crashes or system failures.
+
+In financial systems like FinTrust, ACID compliance is mandatory to prevent data corruption or money loss.
+
+
+------------------------------------------------------------
+
+3. When Are Transactions Needed?
+
+Transactions are required when:
+
+- Multiple documents must be updated together.
+- Multiple collections are involved.
+- Financial or regulatory correctness is critical.
+
+Transactions are NOT necessary when:
+
+- Updating a single document (MongoDB already guarantees atomicity at document level).
+- Performing simple read operations.
+
+
+------------------------------------------------------------
+
+4. Data Model Example
+
+User Document:
+
+{
+  "_id": ObjectId("665f4d7e8b3e6c1e24a7b3e1"),
+  "name": "Alice",
+  "balance": 500.00
+}
+
+Transaction Document:
+
+{
+  "_id": ObjectId("..."),
+  "from": ObjectId("665f4d7e8b3e6c1e24a7b3e1"),
+  "to": ObjectId("665f4d7e8b3e6c1e24a7b3e2"),
+  "amount": 100.00,
+  "date": ISODate("2025-05-30T10:00:00Z"),
+  "status": "completed"
+}
+
+
+------------------------------------------------------------
+
+5. Performing an Atomic Money Transfer
+
+Step-by-step transaction workflow:
+
+1. Start a session
+2. Start a transaction
+3. Perform all updates using the same session
+4. Commit if successful
+5. Abort if any error occurs
+
+
+Example Implementation:
+
+const session = db.getMongo().startSession();
+session.startTransaction();
+
+try {
+
+  // Step 1: Deduct from Alice
+  db.users.updateOne(
+    { _id: ObjectId("665f4d7e8b3e6c1e24a7b3e1"), balance: { $gte: 100 } },
+    { $inc: { balance: -100 } },
+    { session }
+  );
+
+  // Step 2: Add to Bob
+  db.users.updateOne(
+    { _id: ObjectId("665f4d7e8b3e6c1e24a7b3e2") },
+    { $inc: { balance: 100 } },
+    { session }
+  );
+
+  // Step 3: Insert transaction record
+  db.transactions.insertOne(
+    {
+      from: ObjectId("665f4d7e8b3e6c1e24a7b3e1"),
+      to: ObjectId("665f4d7e8b3e6c1e24a7b3e2"),
+      amount: 100,
+      date: new Date(),
+      status: "completed"
+    },
+    { session }
+  );
+
+  // Step 4: Commit
+  session.commitTransaction();
+
+} catch (error) {
+
+  // Rollback if anything fails
+  session.abortTransaction();
+  throw error;
+
+} finally {
+
+  session.endSession();
+
+}
+
+
+Explanation:
+
+If any step fails (for example, insufficient balance), the transaction is aborted and all changes are rolled back.
+
+No partial updates occur.
+
+
+------------------------------------------------------------
+
+6. What Happens During Failure?
+
+If:
+
+- The server crashes before commit
+- A write fails
+- A validation check fails
+
+MongoDB automatically aborts the transaction.
+
+If commitTransaction() completes successfully, all changes become permanent and durable.
+
+
+------------------------------------------------------------
+
+7. Performance Considerations
+
+Transactions add overhead. Therefore:
+
+- Keep transactions short.
+- Avoid long-running operations inside transactions.
+- Use them only when multiple documents must change together.
+- Always validate conditions (like sufficient balance) inside the transaction.
+
+In high-scale systems, monitoring write latency and lock contention is important.
+
+
+------------------------------------------------------------
+
+8. Real-World Implementation Insight
+
+In production systems like FinTrust:
+
+- Refunds must also use transactions.
+- All financial changes should be logged.
+- Write concern and read concern levels must be configured properly.
+- Concurrency must be handled carefully to prevent double spending.
+
+Transactions are critical for regulatory compliance in fintech systems.
+
+
+------------------------------------------------------------
+
+9. Conclusion
+
+MongoDB multi-document transactions allow FinTrust to guarantee that financial operations are:
+
+- Atomic
+- Consistent
+- Isolated
+- Durable
+
+By using sessions and transaction control, the system ensures that money transfers are always correct and never partially applied.
+
+Although MongoDB is known for flexible document storage, it also provides strong transactional guarantees when needed, making it suitable for financial and mission-critical applications.
+
+
+End of Case Study

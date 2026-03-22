@@ -1,0 +1,247 @@
+Title: Organizing A Express Project for Scalability
+Case Study: Greenfield Community Center
+
+
+------------------------------------------------------------
+1. Problem Statement
+
+Greenfield Community Center successfully launched its first Express-based website. Initially, the project had only a homepage and an events route, all written inside a single file (app.js).
+
+However, as the website expanded, new features were added:
+
+- Event listings
+- Class registrations
+- Contact forms
+- News updates
+
+All of this code was added to the same file. Over time, the file became cluttered and difficult to manage. When one volunteer tried fixing a bug, it accidentally affected another feature.
+
+The challenge is:
+
+How can we organize the Express project so that it remains scalable, maintainable, and easy for multiple developers to work on without creating conflicts?
+
+
+------------------------------------------------------------
+2. Learning Objectives
+
+By completing this case study, we aim to:
+
+- Understand why project structure is important in Express applications.
+- Learn how to separate routes into different files.
+- Understand modular design in backend applications.
+- Create a scalable folder structure for real-world projects.
+- Apply best practices for maintainability and teamwork.
+
+
+------------------------------------------------------------
+3. Concept Explanation
+
+A growing Express application is similar to a growing organization.
+
+At first, everything works in a single room. But as responsibilities increase, tasks must be separated into different departments.
+
+Similarly, in Express:
+
+- Routes define URLs.
+- Controllers handle logic.
+- Models define data.
+- Public stores static files.
+
+Separating responsibilities improves clarity and prevents confusion.
+
+
+------------------------------------------------------------
+4. Recommended Scalable Project Structure
+
+A well-organized Express project may look like this:
+
+greenfield-center/
+│
+├── app.js
+├── package.json
+├── routes/
+│   ├── events.js
+│   ├── classes.js
+│   └── contact.js
+├── controllers/
+├── models/
+├── public/
+│   ├── css/
+│   ├── js/
+│   └── images/
+├── views/
+├── middleware/
+└── .env
+
+Each folder has a clear purpose.
+
+routes/        → Defines endpoints  
+controllers/   → Handles logic  
+models/        → Defines database schema  
+public/        → Static files  
+views/         → Template files  
+
+
+------------------------------------------------------------
+5. Modularizing Routes
+
+Step 1: Create routes/events.js
+
+const express = require('express');
+const router = express.Router();
+
+router.get('/', (req, res) => {
+  res.json([
+    'Yoga Class - Monday 7pm',
+    'Gardening Workshop - Wednesday 5pm',
+    'Book Club - Friday 6pm'
+  ]);
+});
+
+module.exports = router;
+
+
+Step 2: Update app.js
+
+const express = require('express');
+const app = express();
+const eventsRouter = require('./routes/events');
+
+app.use(express.json());
+app.use('/events', eventsRouter);
+
+app.get('/', (req, res) => {
+  res.send('Welcome to Greenfield Community Center!');
+});
+
+const port = 3000;
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
+
+Now the events logic is completely separated.
+
+
+------------------------------------------------------------
+6. Adding Another Feature
+
+Create routes/classes.js
+
+const express = require('express');
+const router = express.Router();
+
+router.get('/', (req, res) => {
+  res.json([
+    'Art Class - Tuesday 4pm',
+    'Music Class - Thursday 3pm'
+  ]);
+});
+
+module.exports = router;
+
+
+Update app.js:
+
+const classesRouter = require('./routes/classes');
+app.use('/classes', classesRouter);
+
+
+Now new features can be added without modifying existing routes.
+
+
+------------------------------------------------------------
+7. Serving Static Files
+
+Create a public/ folder for assets.
+
+In app.js:
+
+app.use(express.static('public'));
+
+Now any file inside public/ can be accessed directly.
+
+Example:
+public/logo.png → http://localhost:3000/logo.png
+
+
+------------------------------------------------------------
+8. How This Structure Solves the Problem
+
+This modular approach ensures:
+
+- Code is clean and readable.
+- Bugs are isolated to specific modules.
+- New features can be added easily.
+- Multiple developers can work independently.
+- The application becomes production-ready.
+
+
+------------------------------------------------------------
+9. Challenge
+
+Add a new route /contact.
+
+Requirements:
+
+- Create routes/contact.js.
+- Return contact email and phone number as JSON.
+- Mount it in app.js.
+- Test it in the browser.
+
+
+------------------------------------------------------------
+10. Solution
+
+routes/contact.js
+
+const express = require('express');
+const router = express.Router();
+
+router.get('/', (req, res) => {
+  res.json({
+    email: 'info@greenfieldcenter.org',
+    phone: '555-123-4567'
+  });
+});
+
+module.exports = router;
+
+
+In app.js:
+
+const contactRouter = require('./routes/contact');
+app.use('/contact', contactRouter);
+
+
+Testing:
+
+Visit:
+http://localhost:3000/contact
+
+You should see the JSON response.
+
+
+------------------------------------------------------------
+11. What I Learned
+
+Through this case study, I understood that:
+
+- Writing everything in one file is not a good practice for growing projects.
+- Separating routes improves clarity and structure.
+- app.js should only handle configuration and middleware.
+- Modular design is essential for real-world backend development.
+- A clean folder structure prevents confusion and future technical debt.
+
+------------------------------------------------------------
+
+12. Conclusion
+
+Organizing an Express project properly is not just about making it look neat. It directly affects maintainability, collaboration, and scalability.
+
+By separating routes and static files into different folders, Greenfield Community Center’s website becomes easier to manage and expand in the future.
+
+This structure prepares the application for real-world growth and team development.
+
+------------------------------------------------------------
+End of Case Study
+------------------------------------------------------------

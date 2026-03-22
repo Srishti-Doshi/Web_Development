@@ -1,0 +1,239 @@
+CASE STUDY
+Testing & Debugging React Apps with TypeScript
+(Jest, Linting, and Best Practices)
+
+--------------------------------------------------
+1. Problem Statement
+NewsFleet – Real-Time Newsroom Dashboard
+
+NewsFleet is a real-time newsroom dashboard used by editors
+to add, edit, review, and approve articles.
+
+The system must:
+- Prevent publishing incorrect articles
+- Ensure comments are not lost
+- Avoid regressions when multiple teams ship features
+- Maintain high reliability under rapid development cycles
+
+Even a small bug could result in publishing the wrong story.
+Therefore, automated testing and strict code quality checks
+are mandatory before every deployment.
+
+--------------------------------------------------
+2. Objectives
+
+The objectives of this case study are:
+
+- To implement type-safe testing using Jest
+- To test React components, hooks, and business logic
+- To enforce code quality using ESLint and Prettier
+- To debug efficiently using modern tools
+- To integrate testing and linting into CI pipelines
+
+--------------------------------------------------
+3. Testing Strategy Overview
+
+NewsFleet uses three levels of protection:
+
+1. Unit Testing (Jest)
+   - Tests individual components and logic
+   - Ensures features work in isolation
+
+2. Linting & Formatting
+   - Prevents bad patterns and inconsistencies
+   - Catches unused variables and anti-patterns
+
+3. Debugging Tools
+   - Used during development for tracing issues
+   - Helps identify runtime and state-related bugs
+
+--------------------------------------------------
+4. Component Testing with Jest
+
+ArticleCard Component
+
+interface ArticleCardProps {
+  title: string;
+  author: string;
+  onApprove: () => void;
+}
+
+export const ArticleCard = ({ title, author, onApprove }: ArticleCardProps) => (
+  <div>
+    <h2>{title}</h2>
+    <p>By {author}</p>
+    <button onClick={onApprove}>Approve</button>
+  </div>
+);
+
+Test File: ArticleCard.test.tsx
+
+import { render, screen, fireEvent } from '@testing-library/react';
+import { ArticleCard } from './ArticleCard';
+
+test('renders article information correctly', () => {
+  render(
+    <ArticleCard
+      title="Breaking News"
+      author="Srishti"
+      onApprove={() => {}}
+    />
+  );
+
+  expect(screen.getByText("Breaking News")).toBeInTheDocument();
+  expect(screen.getByText("By Srishti")).toBeInTheDocument();
+});
+
+test('calls approve handler when clicked', () => {
+  const mockFn = jest.fn();
+
+  render(
+    <ArticleCard
+      title="Test"
+      author="Tinka"
+      onApprove={mockFn}
+    />
+  );
+
+  fireEvent.click(screen.getByText("Approve"));
+  expect(mockFn).toHaveBeenCalled();
+});
+
+--------------------------------------------------
+5. Testing Custom Hooks
+
+useApproval Hook
+
+import { useState } from 'react';
+
+export function useApproval() {
+  const [approved, setApproved] = useState(false);
+  const approve = () => setApproved(true);
+  return { approved, approve };
+}
+
+Hook Test
+
+import { renderHook, act } from '@testing-library/react';
+import { useApproval } from './useApproval';
+
+test('approval state updates correctly', () => {
+  const { result } = renderHook(() => useApproval());
+
+  expect(result.current.approved).toBe(false);
+
+  act(() => {
+    result.current.approve();
+  });
+
+  expect(result.current.approved).toBe(true);
+});
+
+--------------------------------------------------
+6. Linting & Code Quality
+
+Why Linting is Important:
+
+- Prevents unused variables
+- Detects incorrect React patterns
+- Maintains consistent formatting
+- Improves readability and collaboration
+
+Example ESLint Configuration
+
+module.exports = {
+  parser: '@typescript-eslint/parser',
+  plugins: ['@typescript-eslint', 'react'],
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react/recommended',
+    'prettier'
+  ],
+  rules: {
+    'no-console': 'warn',
+    'react/prop-types': 'off'
+  }
+};
+
+Prettier ensures consistent formatting across files.
+
+Run before commit:
+- npx eslint .
+- npx prettier --check .
+
+--------------------------------------------------
+7. Debugging Strategy
+
+Tools Used:
+
+1. React Developer Tools
+   - Inspect props and state
+   - Detect unnecessary re-renders
+
+2. VSCode Debugger
+   - Set breakpoints in .tsx files
+   - Inspect variable values
+   - Step through execution flow
+
+3. Console & Jest Debug Output
+   - Log intermediate values
+   - Debug failing test cases
+
+Example Debug Scenario:
+
+If a test expecting "Approved!" fails:
+- Check if state is updated correctly
+- Verify button click triggers handler
+- Ensure conditional rendering logic is correct
+
+--------------------------------------------------
+8. CI Integration
+
+Before merging code:
+
+- Run npm test
+- Run npm run lint
+- Run npm run build
+
+CI pipeline fails if:
+- Tests fail
+- Lint errors exist
+- TypeScript compilation fails
+
+Coverage tracking:
+Use jest --coverage to monitor test completeness.
+
+--------------------------------------------------
+9. Best Practices Followed
+
+- Test every new component and hook
+- Never ignore failing tests
+- Avoid using "any" type
+- Enforce linting rules strictly
+- Use coverage reports to track improvements
+- Debug with proper tools, not guesswork
+
+--------------------------------------------------
+10. Conclusion
+
+This case study demonstrates a robust testing and debugging
+architecture for a large-scale React + TypeScript application.
+
+By combining:
+- Jest for unit and integration testing
+- ESLint and Prettier for code quality
+- Debugging tools for issue tracing
+- CI pipelines for enforcement
+
+NewsFleet ensures:
+- Faster development
+- Fewer regressions
+- Safer deployments
+- Maintainable codebase
+
+Testing and debugging are not optional steps;
+they are core pillars of reliable software engineering.
+
+--------------------------------------------------
+END OF CASE STUDY

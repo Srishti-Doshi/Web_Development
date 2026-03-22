@@ -1,0 +1,256 @@
+CASE STUDY
+MongoDB Aggregation Framework
+MovieFlix Analytics System
+
+1. Introduction
+
+MovieFlix is a global movie streaming platform with millions of users watching movies every day. 
+Every time a user watches a movie, data is stored such as:
+
+- Movie name
+- Genre
+- Country
+- Rating
+- Views
+- Year
+- Revenue
+
+The company wants to generate business insights directly from this data, such as:
+
+• Most popular genres  
+• Top rated movies  
+• Total views per country  
+• Revenue by region  
+• Average watch time  
+
+Instead of exporting this data and processing it in another system, MovieFlix decided to use MongoDB’s Aggregation Framework to analyze the data efficiently inside the database.
+
+--------------------------------------------------
+
+2. What is MongoDB Aggregation Framework?
+
+The Aggregation Framework is a way to process data through multiple stages called a pipeline.
+
+Each stage performs a specific task such as:
+- Filtering data
+- Grouping data
+- Calculating totals or averages
+- Sorting results
+- Reshaping output
+
+The output of one stage becomes the input of the next stage.
+
+General syntax:
+
+db.collection.aggregate([
+  { stage1 },
+  { stage2 },
+  { stage3 }
+])
+
+--------------------------------------------------
+
+3. Important Aggregation Stages
+
+A. $match (Filtering Data)
+
+This stage works like a query filter. It selects only the documents that meet specific conditions.
+
+Example:
+{ $match: { country: "USA", rating: { $gte: 8 } } }
+
+This filters movies from the USA with rating 8 or above.
+
+Best Practice:
+$match should be placed at the beginning of the pipeline to reduce data early.
+
+--------------------------------------------------
+
+B. $group (Grouping and Calculating)
+
+This stage groups documents based on a field and performs calculations such as:
+
+- $sum
+- $avg
+- $count
+- $max
+- $min
+
+Example:
+{
+  $group: {
+    _id: "$genre",
+    totalViews: { $sum: "$views" },
+    avgRating: { $avg: "$rating" }
+  }
+}
+
+This groups data by genre and calculates total views and average rating.
+
+--------------------------------------------------
+
+C. $project (Reshaping Output)
+
+This stage controls what fields appear in the final output.
+
+Example:
+{
+  $project: {
+    _id: 0,
+    genre: "$_id",
+    totalViews: 1,
+    avgRating: { $round: ["$avgRating", 2] }
+  }
+}
+
+It removes _id and renames it as genre.
+
+--------------------------------------------------
+
+D. Other Useful Stages
+
+$sort   → Sort results  
+$limit  → Limit number of results  
+$unwind → Split array elements  
+$addFields → Add computed fields  
+
+--------------------------------------------------
+
+4. Sample Data Structure
+
+Example document:
+
+{
+  "_id": ObjectId("..."),
+  "movie": "Edge of Tomorrow",
+  "genre": "Sci-Fi",
+  "country": "USA",
+  "views": 15000,
+  "rating": 8.2,
+  "year": 2024,
+  "revenue": 45000
+}
+
+--------------------------------------------------
+
+5. Practical Aggregation Examples
+
+Example 1:
+Find total views and average rating per genre in the USA
+
+db.watchHistory.aggregate([
+  { $match: { country: "USA" } },
+  {
+    $group: {
+      _id: "$genre",
+      totalViews: { $sum: "$views" },
+      avgRating: { $avg: "$rating" }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      genre: "$_id",
+      totalViews: 1,
+      avgRating: { $round: ["$avgRating", 2] }
+    }
+  }
+])
+
+Explanation:
+First we filter USA records, then group by genre, and finally format the output.
+
+--------------------------------------------------
+
+Example 2:
+Find Top 5 movies by views in 2024
+
+db.watchHistory.aggregate([
+  { $match: { year: 2024 } },
+  { $sort: { views: -1 } },
+  { $limit: 5 },
+  { $project: { _id: 0, movie: 1, views: 1 } }
+])
+
+--------------------------------------------------
+
+Example 3:
+Find revenue by country
+
+db.watchHistory.aggregate([
+  {
+    $group: {
+      _id: "$country",
+      totalRevenue: { $sum: "$revenue" }
+    }
+  },
+  { $sort: { totalRevenue: -1 } },
+  {
+    $project: {
+      _id: 0,
+      country: "$_id",
+      totalRevenue: 1
+    }
+  }
+])
+
+--------------------------------------------------
+
+6. Mini Task Solution
+
+Question:
+Find average rating for each genre in 2024, but include only genres with more than 10,000 total views.
+
+db.watchHistory.aggregate([
+  { $match: { year: 2024 } },
+  {
+    $group: {
+      _id: "$genre",
+      totalViews: { $sum: "$views" },
+      avgRating: { $avg: "$rating" }
+    }
+  },
+  { $match: { totalViews: { $gt: 10000 } } },
+  {
+    $project: {
+      _id: 0,
+      genre: "$_id",
+      totalViews: 1,
+      avgRating: { $round: ["$avgRating", 1] }
+    }
+  }
+])
+
+--------------------------------------------------
+
+7. Performance Considerations
+
+• Always place $match early  
+• Use indexes on frequently filtered fields like year, country, genre  
+• Avoid returning unnecessary fields  
+• Build pipeline step by step  
+• Use $limit for dashboards  
+
+Example index:
+db.watchHistory.createIndex({ year: 1, genre: 1 })
+
+--------------------------------------------------
+
+8. Conclusion
+
+MongoDB Aggregation Framework makes it possible to perform advanced data analysis directly inside the database.
+
+Using stages like:
+
+- $match
+- $group
+- $project
+- $sort
+- $limit
+
+MovieFlix can efficiently generate reports, dashboards, and business insights without exporting data or writing complex backend logic.
+
+It improves performance, reduces data transfer, and makes analytics scalable for millions of records.
+
+--------------------------------------------------
+END OF CASE STUDY

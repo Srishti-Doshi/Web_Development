@@ -1,0 +1,293 @@
+CASE STUDY
+Lazy Loading & Code Splitting in React
+Dynamic Imports for Performance Optimization
+
+--------------------------------------------------
+1. Problem Statement
+
+EduStream – Scalable Learning Platform
+
+EduStream is a large online learning platform that provides:
+
+- Video lectures
+- Interactive quizzes
+- Discussion forums
+- Student dashboard
+- Admin panel
+- Profile settings
+
+Most users access only a small portion of the app during a session.
+
+Problem Identified:
+
+- Entire application bundle loads on initial visit
+- Large JavaScript size slows down first paint
+- Poor performance on slow networks
+- Unnecessary bandwidth usage
+- Heavy features (charts, quizzes, admin tools) loaded even when unused
+
+The challenge:
+Load only the code required for the current page or feature,
+and fetch additional code on demand.
+
+--------------------------------------------------
+2. Objective
+
+Improve performance by:
+
+✔ Reducing initial bundle size
+✔ Loading features only when required
+✔ Improving first contentful paint (FCP)
+✔ Maintaining smooth user experience
+✔ Handling loading and error states properly
+
+Techniques Used:
+
+✔ Dynamic import()
+✔ React.lazy()
+✔ React.Suspense
+✔ Route-based code splitting
+✔ Component-based code splitting
+✔ Error Boundaries
+
+--------------------------------------------------
+3. Architectural Strategy
+
+Code Splitting Approach:
+
+1. Route-Based Splitting
+   - Dashboard
+   - Courses
+   - Forum
+   - Admin Panel
+
+2. Component-Based Splitting
+   - Quiz module
+   - Charts
+   - Profile settings
+   - Help widgets
+
+Core components (Navbar, Layout, Header) remain in main bundle.
+
+--------------------------------------------------
+4. Dynamic Imports (Foundation)
+
+Dynamic imports allow modules to load asynchronously.
+
+Example:
+
+function loadMathModule() {
+  import('./math').then((module) => {
+    console.log(module.add(2, 3));
+  });
+}
+
+Key Benefit:
+The math module is NOT included in the initial bundle.
+It loads only when this function is called.
+
+--------------------------------------------------
+5. React.lazy() + Suspense
+
+A. Basic Lazy Loaded Component
+
+import React, { Suspense } from 'react';
+
+const VideoPlayer = React.lazy(() => import('./VideoPlayer'));
+
+function HomePage() {
+  return (
+    <div>
+      <h1>Welcome to EduStream</h1>
+      <Suspense fallback={<div>Loading Video Player...</div>}>
+        <VideoPlayer />
+      </Suspense>
+    </div>
+  );
+}
+
+How It Works:
+- VideoPlayer loads only when rendered.
+- Suspense displays fallback UI while loading.
+
+--------------------------------------------------
+6. Route-Based Code Splitting
+
+Ideal for major sections of the app.
+
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Suspense, lazy } from 'react';
+
+const Dashboard = lazy(() => import('./Dashboard'));
+const Courses = lazy(() => import('./Courses'));
+const Forum = lazy(() => import('./Forum'));
+const AdminPanel = lazy(() => import('./AdminPanel'));
+
+function EduStreamApp() {
+  return (
+    <BrowserRouter>
+      <Suspense fallback={<div>Loading Page...</div>}>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/forum" element={<Forum />} />
+          <Route path="/admin" element={<AdminPanel />} />
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
+  );
+}
+
+Result:
+Each route loads its own JavaScript bundle.
+Initial load is significantly smaller.
+
+--------------------------------------------------
+7. Component-Based Code Splitting
+
+Used for large or optional features.
+
+Example: Quiz Module
+
+import React, { Suspense, useState } from 'react';
+
+const Quiz = React.lazy(() => import('./Quiz'));
+
+function CoursePage() {
+  const [showQuiz, setShowQuiz] = useState(false);
+
+  return (
+    <div>
+      <h2>Course Content</h2>
+      <button onClick={() => setShowQuiz(true)}>
+        Take Quiz
+      </button>
+
+      {showQuiz && (
+        <Suspense fallback={<div>Loading Quiz...</div>}>
+          <Quiz />
+        </Suspense>
+      )}
+    </div>
+  );
+}
+
+The Quiz component loads only when user clicks the button.
+
+--------------------------------------------------
+8. Error Handling with Error Boundaries
+
+Lazy loading can fail (network issues).
+
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <div>Failed to load component.</div>;
+    }
+    return this.props.children;
+  }
+}
+
+Usage:
+
+<ErrorBoundary>
+  <Suspense fallback={<div>Loading...</div>}>
+    <AdminPanel />
+  </Suspense>
+</ErrorBoundary>
+
+--------------------------------------------------
+9. Profile Settings – On-Demand Feature
+
+const ProfileSettings = React.lazy(() => import('./ProfileSettings'));
+
+function UserDashboard() {
+  const [openSettings, setOpenSettings] = React.useState(false);
+
+  return (
+    <div>
+      <button onClick={() => setOpenSettings(true)}>
+        Open Settings
+      </button>
+
+      {openSettings && (
+        <Suspense fallback={<div>Loading Settings...</div>}>
+          <ProfileSettings />
+        </Suspense>
+      )}
+    </div>
+  );
+}
+
+Settings code loads only when user requests it.
+
+--------------------------------------------------
+10. Performance Improvements Achieved
+
+✔ Smaller initial JavaScript bundle
+✔ Faster initial page load
+✔ Reduced bandwidth consumption
+✔ Improved Time to Interactive (TTI)
+✔ Better performance on slow networks
+✔ Improved Lighthouse score
+
+--------------------------------------------------
+11. Best Practices Applied
+
+✔ Started with route-based splitting
+✔ Split large feature modules
+✔ Wrapped all lazy components in Suspense
+✔ Added fallback UI for better UX
+✔ Added error boundaries
+✔ Avoided over-splitting tiny components
+✔ Ensured import paths remain static strings
+
+--------------------------------------------------
+12. Pitfalls Avoided
+
+❌ Lazy loading too many small components
+❌ Large monolithic lazy bundles
+❌ Missing Suspense fallback
+❌ Ignoring loading errors
+❌ Dynamic import paths as variables
+❌ Lazy loading critical UI (navbar/header)
+
+--------------------------------------------------
+13. Technical Summary
+
+Technique              Purpose
+--------------------------------------------------
+import()               Asynchronous module loading
+React.lazy()           Lazy load components
+Suspense               Loading UI fallback
+Route Splitting        Split by page
+Component Splitting    Split by feature
+ErrorBoundary          Handle load failures
+
+--------------------------------------------------
+14. Conclusion
+
+By implementing lazy loading and code splitting:
+
+EduStream achieved:
+
+✔ Faster initial load
+✔ Improved scalability
+✔ Efficient resource usage
+✔ Cleaner architecture
+✔ Better user experience
+
+The application now loads features only when needed,
+ensuring high performance even as the platform grows.
+
+--------------------------------------------------
+END OF CASE STUDY

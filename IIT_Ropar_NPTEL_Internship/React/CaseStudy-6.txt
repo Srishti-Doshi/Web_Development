@@ -1,0 +1,292 @@
+CASE STUDY
+Zustand Slices & Modular State Architecture
+Scaling a Collaborative Design Platform
+
+--------------------------------------------------
+1. Problem Statement
+DesignHub – Real-Time Collaborative Design Platform
+
+DesignHub is a Figma-like collaborative design platform where:
+
+- Users create and edit design files in real time.
+- Multiple teams manage different features:
+  - Files
+  - Users
+  - Comments
+  - Notifications
+  - Preferences
+- State must remain modular and scalable.
+- Performance is critical — components should only re-render
+  when the specific state they depend on changes.
+- Middleware such as devtools and persistence must be applied
+  cleanly without coupling unrelated features.
+
+The challenge:
+Design a global state architecture that is modular, type-safe,
+scalable, and independently maintainable by feature teams.
+
+--------------------------------------------------
+2. Objectives
+
+This case study demonstrates how to:
+
+- Implement modular state using Zustand slices
+- Combine slices into a unified store with type safety
+- Apply middleware cleanly
+- Maintain performance through selective subscriptions
+- Test slices independently
+
+--------------------------------------------------
+3. Architectural Approach
+
+Design Principle:
+Each feature owns its slice of state.
+
+Each slice:
+- Defines its own interface
+- Contains its own actions
+- Is independently testable
+- Is composed into a single global store
+
+Final store = combination of all slices
+
+--------------------------------------------------
+4. Slice Implementation
+
+A. User Slice
+
+File: store/slices/userSlice.ts
+
+export interface UserSlice {
+  user: { id: string; name: string } | null;
+  setUser: (user: { id: string; name: string }) => void;
+  clearUser: () => void;
+}
+
+export const createUserSlice = (set: any): UserSlice => ({
+  user: null,
+  setUser: (user) => set({ user }),
+  clearUser: () => set({ user: null }),
+});
+
+--------------------------------------------------
+B. File Slice
+
+File: store/slices/fileSlice.ts
+
+export interface FileItem {
+  id: string;
+  name: string;
+  content: string;
+}
+
+export interface FileSlice {
+  files: FileItem[];
+  addFile: (file: FileItem) => void;
+  updateFile: (id: string, content: string) => void;
+}
+
+export const createFileSlice = (set: any): FileSlice => ({
+  files: [],
+  addFile: (file) =>
+    set((state: FileSlice) => ({
+      files: [...state.files, file],
+    })),
+  updateFile: (id, content) =>
+    set((state: FileSlice) => ({
+      files: state.files.map((f) =>
+        f.id === id ? { ...f, content } : f
+      ),
+    })),
+});
+
+--------------------------------------------------
+C. Comment Slice
+
+File: store/slices/commentSlice.ts
+
+export interface Comment {
+  id: string;
+  fileId: string;
+  author: string;
+  text: string;
+}
+
+export interface CommentSlice {
+  comments: Comment[];
+  addComment: (comment: Comment) => void;
+  getCommentsByFile: (fileId: string) => Comment[];
+}
+
+export const createCommentSlice = (set: any, get: any): CommentSlice => ({
+  comments: [],
+  addComment: (comment) =>
+    set((state: CommentSlice) => ({
+      comments: [...state.comments, comment],
+    })),
+  getCommentsByFile: (fileId) =>
+    get().comments.filter((c: Comment) => c.fileId === fileId),
+});
+
+--------------------------------------------------
+D. Notifications Slice (Additional Feature)
+
+export interface Notification {
+  id: string;
+  message: string;
+  read: boolean;
+}
+
+export interface NotificationSlice {
+  notifications: Notification[];
+  addNotification: (message: string) => void;
+  markAsRead: (id: string) => void;
+  clearNotifications: () => void;
+}
+
+export const createNotificationSlice = (set: any): NotificationSlice => ({
+  notifications: [],
+  addNotification: (message) =>
+    set((state: NotificationSlice) => ({
+      notifications: [
+        ...state.notifications,
+        { id: Date.now().toString(), message, read: false },
+      ],
+    })),
+  markAsRead: (id) =>
+    set((state: NotificationSlice) => ({
+      notifications: state.notifications.map((n) =>
+        n.id === id ? { ...n, read: true } : n
+      ),
+    })),
+  clearNotifications: () => set({ notifications: [] }),
+});
+
+--------------------------------------------------
+5. Combining All Slices
+
+File: store/index.ts
+
+import { create } from 'zustand';
+import { devtools, persist } from 'zustand/middleware';
+
+type DesignHubStore =
+  UserSlice &
+  FileSlice &
+  CommentSlice &
+  NotificationSlice;
+
+export const useDesignHubStore = create<DesignHubStore>()(
+  devtools(
+    persist(
+      (set, get) => ({
+        ...createUserSlice(set),
+        ...createFileSlice(set),
+        ...createCommentSlice(set, get),
+        ...createNotificationSlice(set),
+      }),
+      { name: 'designhub-store' }
+    )
+  )
+);
+
+Middleware Explanation:
+- devtools enables debugging in Redux DevTools.
+- persist stores state in localStorage.
+- Middleware wraps the final combined store.
+
+--------------------------------------------------
+6. Using Slices in Components
+
+Example: User Profile
+
+function UserProfile() {
+  const user = useDesignHubStore((s) => s.user);
+  const setUser = useDesignHubStore((s) => s.setUser);
+
+  if (!user) {
+    return (
+      <button onClick={() => setUser({ id: 'u1', name: 'Srishti' })}>
+        Login
+      </button>
+    );
+  }
+
+  return <div>Welcome, {user.name}</div>;
+}
+
+--------------------------------------------------
+Example: Notifications Panel
+
+function NotificationsPanel() {
+  const notifications = useDesignHubStore((s) => s.notifications);
+  const markAsRead = useDesignHubStore((s) => s.markAsRead);
+
+  const unread = notifications.filter((n) => !n.read);
+
+  return (
+    <div>
+      <h3>Unread Notifications</h3>
+      <ul>
+        {unread.map((n) => (
+          <li key={n.id}>
+            {n.message}
+            <button onClick={() => markAsRead(n.id)}>
+              Mark as Read
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+--------------------------------------------------
+7. Independent Slice Testing (Example)
+
+import { createUserSlice } from './userSlice';
+
+test('setUser updates user state', () => {
+  let state = { user: null };
+  const set = (fn: any) => {
+    state = { ...state, ...fn(state) };
+  };
+
+  const slice = createUserSlice(set);
+  slice.setUser({ id: 'u2', name: 'Tiku' });
+
+  expect(state.user.name).toBe('Tiku');
+});
+
+Each slice can be tested without creating the full store.
+
+--------------------------------------------------
+8. Best Practices Applied
+
+- Each feature has its own slice
+- No tight coupling between slices
+- State updates are immutable
+- Selectors prevent unnecessary re-renders
+- Middleware applied centrally
+- Slices independently testable
+- TypeScript ensures full type safety
+
+--------------------------------------------------
+9. Conclusion
+
+Zustand slices provide a scalable and modular state architecture
+for large collaborative applications like DesignHub.
+
+By separating state into feature-owned slices:
+
+- Teams can work independently
+- Performance remains optimized
+- Code remains maintainable
+- Testing becomes simpler
+- Middleware integration is clean
+
+This modular architecture ensures long-term scalability,
+maintainability, and performance in complex React applications.
+
+--------------------------------------------------
+END OF CASE STUDY

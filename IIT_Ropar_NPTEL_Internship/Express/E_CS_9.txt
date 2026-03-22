@@ -1,0 +1,301 @@
+Title: Implementing Repository Pattern in Express
+Case Study: Riverdale University Registration System
+
+
+------------------------------------------------------------
+1. Problem Statement: The Registration Maze
+
+At Riverdale University, course registration happens every semester under heavy load.
+
+However, the internal system is messy:
+
+• Some departments store data in spreadsheets.
+• Some use databases.
+• Some still rely on paper records.
+• Students occasionally get double-booked.
+• Registration requests sometimes disappear.
+• Changing storage systems would require rewriting large portions of the code.
+• Testing new features is risky because business logic is tightly coupled to storage.
+
+The core issue is tight coupling between business logic and data storage.
+
+The university needs a system where:
+
+• Business rules do not depend on how data is stored.
+• Storage systems can be upgraded without rewriting logic.
+• Testing can be done without a real database.
+• The system is modular and scalable.
+
+
+------------------------------------------------------------
+2. Learning Objectives
+
+After completing this case study, I should be able to:
+
+• Understand the purpose of the Repository Pattern.
+• Create repository interfaces to abstract data access.
+• Implement multiple repository types.
+• Swap storage backends without changing business logic.
+• Write testable services using mock repositories.
+
+
+------------------------------------------------------------
+3. What is the Repository Pattern?
+
+The Repository Pattern centralizes data access logic into one layer.
+
+Instead of writing database or storage code inside services or controllers,
+we create a repository that acts like a collection of domain objects.
+
+Business logic talks only to the repository interface.
+
+It does NOT care whether data comes from:
+
+• Memory
+• Files
+• SQL database
+• NoSQL database
+• External API
+
+This separation improves flexibility and maintainability.
+
+
+------------------------------------------------------------
+4. Designing the Domain Model
+
+First, we define what a Course looks like.
+
+File: models/Course.ts
+
+export interface Course {
+  id: string;
+  name: string;
+  capacity: number;
+  students: string[];
+}
+
+This represents the main entity in our system.
+
+
+------------------------------------------------------------
+5. Creating the Repository Interface
+
+File: repositories/interfaces/ICourseRepository.ts
+
+export interface ICourseRepository {
+  findAll(): Promise<Course[]>;
+  findById(id: string): Promise<Course | null>;
+  save(course: Course): Promise<void>;
+  enrollStudent(courseId: string, studentId: string): Promise<void>;
+  findByStudentId(studentId: string): Promise<Course[]>;
+  delete(courseId: string): Promise<void>;
+}
+
+Why define an interface?
+
+Because business logic should depend on abstraction, not implementation.
+
+
+------------------------------------------------------------
+6. In-Memory Repository Implementation
+
+File: repositories/InMemoryCourseRepository.ts
+
+import { ICourseRepository } from "./interfaces/ICourseRepository";
+import { Course } from "../models/Course";
+
+export class InMemoryCourseRepository implements ICourseRepository {
+
+  private courses: Course[] = [];
+
+  async findAll(): Promise<Course[]> {
+    return this.courses;
+  }
+
+  async findById(id: string): Promise<Course | null> {
+    return this.courses.find(c => c.id === id) || null;
+  }
+
+  async save(course: Course): Promise<void> {
+    const index = this.courses.findIndex(c => c.id === course.id);
+
+    if (index === -1) {
+      this.courses.push(course);
+    } else {
+      this.courses[index] = course;
+    }
+  }
+
+  async enrollStudent(courseId: string, studentId: string): Promise<void> {
+    const course = await this.findById(courseId);
+
+    if (course && !course.students.includes(studentId)) {
+      course.students.push(studentId);
+      await this.save(course);
+    }
+  }
+
+  async findByStudentId(studentId: string): Promise<Course[]> {
+    return this.courses.filter(c => c.students.includes(studentId));
+  }
+
+  async delete(courseId: string): Promise<void> {
+    this.courses = this.courses.filter(c => c.id !== courseId);
+  }
+}
+
+All storage logic is isolated here.
+
+
+------------------------------------------------------------
+7. Service Layer (Business Rules)
+
+File: services/CourseService.ts
+
+import { ICourseRepository } from "../repositories/interfaces/ICourseRepository";
+
+export class CourseService {
+
+  constructor(private courseRepo: ICourseRepository) {}
+
+  async enroll(courseId: string, studentId: string) {
+
+    const course = await this.courseRepo.findById(courseId);
+
+    if (!course) {
+      throw new Error("Course not found");
+    }
+
+    if (course.students.length >= course.capacity) {
+      throw new Error("Course is full");
+    }
+
+    await this.courseRepo.enrollStudent(courseId, studentId);
+
+    return { message: "Enrolled successfully" };
+  }
+
+  async getStudentCourses(studentId: string) {
+    return this.courseRepo.findByStudentId(studentId);
+  }
+
+  async deleteCourse(courseId: string) {
+    await this.courseRepo.delete(courseId);
+    return { message: "Course deleted successfully" };
+  }
+}
+
+Notice:
+
+• Service does not know how data is stored.
+• It only depends on the repository interface.
+
+
+------------------------------------------------------------
+8. Connecting Everything (Dependency Injection)
+
+File: app.ts
+
+import express from "express";
+import { InMemoryCourseRepository } from "./repositories/InMemoryCourseRepository";
+import { CourseService } from "./services/CourseService";
+
+const app = express();
+app.use(express.json());
+
+const courseRepo = new InMemoryCourseRepository();
+const courseService = new CourseService(courseRepo);
+
+app.post("/courses/:id/enroll", async (req, res) => {
+  try {
+    const result = await courseService.enroll(
+      req.params.id,
+      req.body.studentId
+    );
+    res.status(200).json(result);
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.delete("/courses/:id", async (req, res) => {
+  const result = await courseService.deleteCourse(req.params.id);
+  res.status(200).json(result);
+});
+
+app.listen(3000, () =>
+  console.log("Registration system running on port 3000")
+);
+
+Here we inject the repository into the service.
+
+If tomorrow we switch to a database repository,
+only this initialization changes.
+
+
+------------------------------------------------------------
+9. Why This Architecture Works
+
+• Business rules are isolated in Service layer.
+• Storage details are isolated in Repository layer.
+• Controllers remain simple.
+• Storage can be swapped easily.
+• Testing becomes easy with mock repositories.
+• System becomes scalable and maintainable.
+
+
+------------------------------------------------------------
+10. Challenge
+
+1. Create a DatabaseCourseRepository (mock implementation).
+2. Replace InMemoryCourseRepository with DatabaseCourseRepository.
+3. Confirm that no changes are needed in CourseService.
+
+This proves decoupling works.
+
+
+------------------------------------------------------------
+11. Common Pitfalls & Best Practices
+
+Mistake:
+Accessing database directly in service.
+
+Best Practice:
+Always use repository abstraction.
+
+Mistake:
+Exposing SQL queries to service layer.
+
+Best Practice:
+Return only domain models.
+
+Mistake:
+Hardcoding repository implementation.
+
+Best Practice:
+Use Dependency Injection.
+
+
+------------------------------------------------------------
+12. Key Takeaways
+
+• Repository Pattern abstracts data access.
+• Business logic should not depend on storage details.
+• Interfaces provide flexibility.
+• Dependency Injection improves modularity.
+• Proper separation increases scalability and testability.
+
+
+------------------------------------------------------------
+13. Conclusion
+
+By implementing the Repository Pattern:
+
+• Riverdale University can upgrade storage systems easily.
+• Registration rules remain stable.
+• Testing becomes safe and efficient.
+• New features can be added confidently.
+
+The system is now modular, flexible, and future-ready.
+
+End of Case Study

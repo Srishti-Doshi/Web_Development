@@ -1,0 +1,182 @@
+CASE STUDY
+Routing in React: Type-Safe Route Parameters with React Router & TypeScript
+
+--------------------------------------------------
+1. Problem Statement
+Medix Patient Portal
+
+Medix is developing a patient portal for hospitals where doctors,
+patients, and appointments are accessed using dynamic URLs.
+
+Examples:
+- /patients/:patientId
+- /patients/:patientId/appointments/:appointmentId
+
+Each ID in the URL must:
+- Be present
+- Be correctly typed
+- Be safely used for fetching data
+
+A wrong or missing route parameter can cause crashes, wrong data
+display, or security issues. Therefore, routing must be type-safe,
+maintainable, and error-free.
+
+--------------------------------------------------
+2. Objectives
+
+The objectives of this case study are:
+- To define dynamic routes using React Router
+- To extract route parameters safely using TypeScript
+- To prevent runtime errors caused by missing or invalid parameters
+- To maintain clean and scalable routing logic
+
+--------------------------------------------------
+3. Core Routing Concept
+
+React Router allows dynamic parameters using a colon (:).
+
+Example:
+Route path = "/patients/:patientId/appointments/:appointmentId"
+
+TypeScript ensures:
+- Required parameters exist
+- Parameters are used correctly inside components
+
+--------------------------------------------------
+4. Route Definition
+
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AppointmentDetails from "./AppointmentDetails";
+
+const App = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/patients/:patientId/appointments/:appointmentId"
+          element={<AppointmentDetails />}
+        />
+      </Routes>
+    </BrowserRouter>
+  );
+};
+
+--------------------------------------------------
+5. Typing Route Parameters
+
+An interface defines the expected parameters.
+
+interface AppointmentParams {
+  patientId: string;
+  appointmentId: string;
+}
+
+This makes route usage predictable and type-safe.
+
+--------------------------------------------------
+6. Extracting and Validating Params
+
+import { useParams } from "react-router-dom";
+
+const AppointmentDetails = () => {
+  const { patientId, appointmentId } =
+    useParams<AppointmentParams>();
+
+  if (!patientId || !appointmentId) {
+    return <div>Missing route parameters</div>;
+  }
+
+  const appointmentNumber = Number(appointmentId);
+
+  if (isNaN(appointmentNumber)) {
+    return <div>Invalid appointment ID</div>;
+  }
+
+  return (
+    <div>
+      <h2>Patient ID: {patientId}</h2>
+      <h3>Appointment ID: {appointmentNumber}</h3>
+    </div>
+  );
+};
+
+--------------------------------------------------
+7. Type-Safe Navigation
+
+Links must pass parameters as strings.
+
+import { Link } from "react-router-dom";
+
+const PatientRow = () => {
+  const patientId = "P101";
+  const appointmentId = "5001";
+
+  return (
+    <Link
+      to={`/patients/${patientId}/appointments/${appointmentId}`}
+    >
+      View Appointment
+    </Link>
+  );
+};
+
+--------------------------------------------------
+8. Programmatic Navigation
+
+import { useNavigate } from "react-router-dom";
+
+const NavigateExample = () => {
+  const navigate = useNavigate();
+
+  const goToAppointment = () => {
+    navigate("/patients/P102/appointments/3002");
+  };
+
+  return <button onClick={goToAppointment}>Open</button>;
+};
+
+--------------------------------------------------
+9. Error Prevention with Type Safety
+
+TypeScript prevents:
+- Accessing undefined route parameters
+- Using numeric logic on string IDs without conversion
+- Forgetting required parameters in routes
+
+All issues are detected at compile time instead of runtime.
+
+--------------------------------------------------
+10. Mini Scenario: Doctor & Patient Route
+
+Route:
+"/doctors/:doctorId/patients/:patientId"
+
+interface DoctorPatientParams {
+  doctorId: string;
+  patientId: string;
+}
+
+Validation ensures both IDs exist and are valid before use.
+
+--------------------------------------------------
+11. Best Practices
+
+- Always define a parameter interface
+- Use useParams<Interface>() for type safety
+- Validate and convert parameters before use
+- Avoid hardcoded strings in large applications
+- Handle missing or invalid parameters gracefully
+
+--------------------------------------------------
+12. Conclusion
+
+This case study demonstrates how TypeScript and React Router
+work together to provide type-safe routing.
+
+By enforcing strict typing on route parameters:
+- Runtime errors are minimized
+- Code becomes more readable and maintainable
+- Complex routing remains safe and scalable
+
+--------------------------------------------------
+END OF CASE STUDY

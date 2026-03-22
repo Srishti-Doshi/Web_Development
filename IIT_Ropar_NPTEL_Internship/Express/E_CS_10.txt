@@ -1,0 +1,336 @@
+Title: Dependency Injection and Inversion of Control in Express
+Case Study: Sunrise Family Clinic Appointment System
+
+
+------------------------------------------------------------
+1. Problem Statement: Growing Clinic’s Scheduling Headaches
+
+Sunrise Family Clinic began as a small practice with one doctor and a handwritten appointment register.
+
+As the clinic expanded, so did the complexity of its system:
+
+• Multiple doctors and departments.
+• Online appointment booking.
+• SMS reminders.
+• Insurance verification.
+• Payment processing.
+
+However, the internal code became messy:
+
+• Scheduling logic directly created notification services.
+• Billing logic was tightly coupled with appointment booking.
+• Switching SMS providers required modifying multiple files.
+• Testing caused real SMS messages and payment charges to be triggered.
+
+The main issue was tight coupling between system components.
+
+The clinic needed a system where:
+
+• Scheduling, notifications, and billing are independent.
+• Services can be swapped without rewriting business logic.
+• Testing can be done safely without triggering real services.
+• The system remains scalable as features grow.
+
+
+------------------------------------------------------------
+2. Learning Objectives
+
+After completing this case study, I should be able to:
+
+• Understand Dependency Injection (DI) and Inversion of Control (IoC).
+• Use TypeDI to manage dependencies in Express.
+• Inject services instead of hardcoding them.
+• Swap implementations easily.
+• Write safe unit tests using mock services.
+
+
+------------------------------------------------------------
+3. What is Dependency Injection?
+
+Dependency Injection (DI) means:
+
+A class receives the services it needs from outside instead of creating them itself.
+
+Bad (Tightly Coupled Example):
+
+class AppointmentService {
+  private notifier = new SMSService();  // Hardcoded
+}
+
+Problem:
+If we want EmailService instead of SMSService,
+we must rewrite AppointmentService.
+
+Good (Using DI):
+
+class AppointmentService {
+  constructor(private notifier: NotificationService) {}
+}
+
+Now the service does not care who provides notifications.
+
+It only cares about the contract.
+
+
+------------------------------------------------------------
+4. What is Inversion of Control (IoC)?
+
+Inversion of Control means:
+
+The system no longer controls how dependencies are created.
+An external container (IoC container) manages creation and injection.
+
+In our case, TypeDI acts as that container.
+
+Instead of:
+
+AppointmentService creates dependencies.
+
+Now:
+
+The container creates AppointmentService and injects dependencies.
+
+
+------------------------------------------------------------
+5. Setting Up TypeDI
+
+Install required packages:
+
+npm install typedi reflect-metadata
+
+In tsconfig.json enable:
+
+"experimentalDecorators": true,
+"emitDecoratorMetadata": true
+
+At the top of your main file:
+
+import "reflect-metadata";
+
+
+------------------------------------------------------------
+6. Defining Service Contracts (Interfaces)
+
+We first define contracts for our services.
+
+notifications/NotificationService.ts
+
+export interface NotificationService {
+  send(to: string, message: string): Promise<void>;
+}
+
+billing/BillingService.ts
+
+export interface BillingService {
+  charge(patient: string, amount: number): Promise<void>;
+}
+
+These interfaces define what must be done,
+not how it is done.
+
+
+------------------------------------------------------------
+7. Implementing Real Services
+
+notifications/SMSService.ts
+
+import { Service } from "typedi";
+import { NotificationService } from "./NotificationService";
+
+@Service()
+export class SMSService implements NotificationService {
+  async send(to: string, message: string) {
+    console.log(`SMS sent to ${to}: ${message}`);
+  }
+}
+
+billing/StripeBillingService.ts
+
+import { Service } from "typedi";
+import { BillingService } from "./BillingService";
+
+@Service()
+export class StripeBillingService implements BillingService {
+  async charge(patient: string, amount: number) {
+    console.log(`Charged $${amount} to ${patient} via Stripe`);
+  }
+}
+
+Each class is marked with @Service(),
+so TypeDI can manage it.
+
+
+------------------------------------------------------------
+8. Injecting Dependencies into Appointment Logic
+
+appointments/AppointmentService.ts
+
+import { Service, Inject } from "typedi";
+import { NotificationService } from "../notifications/NotificationService";
+import { BillingService } from "../billing/BillingService";
+import { SMSService } from "../notifications/SMSService";
+import { StripeBillingService } from "../billing/StripeBillingService";
+
+@Service()
+export class AppointmentService {
+
+  constructor(
+    @Inject(() => SMSService) private notifier: NotificationService,
+    @Inject(() => StripeBillingService) private billing: BillingService
+  ) {}
+
+  async bookAppointment(patient: string, time: string, amount: number) {
+
+    await this.billing.charge(patient, amount);
+
+    await this.notifier.send(
+      patient,
+      `Your appointment is booked for ${time}`
+    );
+
+    return { status: "confirmed" };
+  }
+}
+
+Important:
+
+AppointmentService does not create SMSService or StripeBillingService.
+
+They are injected automatically.
+
+
+------------------------------------------------------------
+9. Swapping Implementations Easily
+
+If the clinic wants to switch to Email reminders:
+
+main.ts
+
+import { Container } from "typedi";
+import { EmailService } from "./notifications/EmailService";
+import { NotificationService } from "./notifications/NotificationService";
+
+Container.set(NotificationService, new EmailService());
+
+const appointmentService = Container.get(AppointmentService);
+
+No change in AppointmentService code is needed.
+
+This shows loose coupling.
+
+
+------------------------------------------------------------
+10. Testing with Mock Services
+
+During testing, we do not want real SMS or payments.
+
+Create mock services:
+
+class MockNotifier implements NotificationService {
+  messages: string[] = [];
+
+  async send(to: string, message: string) {
+    this.messages.push(`${to}: ${message}`);
+  }
+}
+
+class MockBilling implements BillingService {
+  charges: string[] = [];
+
+  async charge(patient: string, amount: number) {
+    this.charges.push(`${patient}: $${amount}`);
+  }
+}
+
+In test setup:
+
+Container.set(NotificationService, new MockNotifier());
+Container.set(BillingService, new MockBilling());
+
+const service = Container.get(AppointmentService);
+
+await service.bookAppointment("bob@example.com", "Tuesday 2pm", 75);
+
+Container.reset();
+
+Now:
+
+• No real SMS sent.
+• No real payment charged.
+• Only in-memory logs are recorded.
+
+Testing becomes safe and reliable.
+
+
+------------------------------------------------------------
+11. Why This Architecture Works
+
+• Components are loosely coupled.
+• Services can be swapped easily.
+• Business logic stays clean.
+• Testing becomes safe.
+• System becomes scalable.
+• Adding new providers becomes easy.
+
+
+------------------------------------------------------------
+12. Challenge
+
+1. Add a new EmailService implementation.
+2. Register it using Container.set().
+3. Confirm AppointmentService works without modification.
+4. Write a unit test verifying billing is triggered.
+
+
+------------------------------------------------------------
+13. Common Pitfalls & Best Practices
+
+Mistake:
+Hardcoding dependencies inside services.
+
+Best Practice:
+Always inject dependencies.
+
+Mistake:
+Depending on concrete classes instead of interfaces.
+
+Best Practice:
+Depend on abstractions.
+
+Mistake:
+Forgetting to reset container in tests.
+
+Best Practice:
+Use Container.reset() after each test.
+
+Mistake:
+Injecting too many services.
+
+Best Practice:
+Keep services focused and small.
+
+
+------------------------------------------------------------
+14. Key Takeaways
+
+• Dependency Injection reduces coupling.
+• Inversion of Control centralizes dependency management.
+• TypeDI simplifies dependency wiring.
+• Mocking becomes easy for testing.
+• Swapping services requires minimal changes.
+
+
+------------------------------------------------------------
+15. Conclusion
+
+By implementing Dependency Injection and Inversion of Control:
+
+• Sunrise Family Clinic can scale safely.
+• New features can be added easily.
+• Services can be swapped without rewriting logic.
+• Testing becomes reliable.
+• The system becomes modular and maintainable.
+
+Dependency Injection ensures that every part of the system works independently yet cooperatively.
+
+End of Case Study

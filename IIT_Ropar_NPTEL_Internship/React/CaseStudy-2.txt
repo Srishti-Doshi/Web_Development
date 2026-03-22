@@ -1,0 +1,218 @@
+CASE STUDY
+TSX & Typed Components: Mastering Type Safety in React
+
+--------------------------------------------------
+1. Problem Statement
+Secure Banking Dashboard
+
+A financial institution is developing a secure React dashboard to manage
+high-value banking transactions.
+
+Each transaction must:
+- Have a strictly typed ID, amount, currency, and timestamp
+- Prevent incorrect calculations (e.g., mixing currencies)
+- Maintain immutable audit logs to avoid accidental or malicious changes
+
+Even a single type error can cause financial loss or regulatory violations.
+Therefore, the application must enforce type safety at every level.
+
+--------------------------------------------------
+2. Objectives
+
+The objectives of this case study are:
+- To enforce strict typing for props, state, and events
+- To implement both functional and class components using TSX
+- To prevent runtime errors using compile-time checks
+- To maintain immutable and secure application state
+
+--------------------------------------------------
+3. Core Data Model
+
+interface Transaction {
+  id: string;
+  amount: number;
+  currency: "USD" | "EUR";
+  timestamp: Date;
+}
+
+--------------------------------------------------
+4. Functional Component: Transaction List
+
+interface TransactionListProps {
+  transactions: Transaction[];
+  onSelect: (id: string) => void;
+}
+
+const TransactionList = ({ transactions, onSelect }: TransactionListProps) => {
+  return (
+    <ul>
+      {transactions.map(tx => (
+        <li key={tx.id} onClick={() => onSelect(tx.id)}>
+          {tx.amount} {tx.currency} - {tx.timestamp.toDateString()}
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+This component uses strictly typed props to ensure:
+- Every transaction has valid fields
+- Event callbacks receive correct parameters
+
+--------------------------------------------------
+5. Functional Component: Balance Display
+
+interface BalanceProps {
+  balance: number;
+  currency: "USD" | "EUR";
+}
+
+const BalanceDisplay = ({ balance, currency }: BalanceProps) => {
+  return (
+    <h3>
+      Current Balance: {balance} {currency}
+    </h3>
+  );
+};
+
+--------------------------------------------------
+6. Class Component: Transaction Form
+
+interface TransactionFormProps {
+  onSubmit: (amount: number, currency: "USD" | "EUR") => void;
+}
+
+interface TransactionFormState {
+  amount: string;
+  currency: "USD" | "EUR";
+}
+
+class TransactionForm extends React.Component<
+  TransactionFormProps,
+  TransactionFormState
+> {
+  state: TransactionFormState = {
+    amount: "",
+    currency: "USD"
+  };
+
+  handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    this.props.onSubmit(
+      Number(this.state.amount),
+      this.state.currency
+    );
+    this.setState({ amount: "" });
+  };
+
+  render() {
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <input
+          type="number"
+          value={this.state.amount}
+          onChange={e => this.setState({ amount: e.target.value })}
+        />
+        <select
+          value={this.state.currency}
+          onChange={e =>
+            this.setState({ currency: e.target.value as "USD" | "EUR" })
+          }
+        >
+          <option value="USD">USD</option>
+          <option value="EUR">EUR</option>
+        </select>
+        <button type="submit">Add Transaction</button>
+      </form>
+    );
+  }
+}
+
+--------------------------------------------------
+7. State Management with useReducer
+
+interface AccountState {
+  readonly balance: number;
+  readonly transactions: ReadonlyArray<Transaction>;
+}
+
+type AccountAction =
+  | { type: "deposit"; transaction: Transaction }
+  | { type: "withdraw"; transaction: Transaction };
+
+function accountReducer(
+  state: AccountState,
+  action: AccountAction
+): AccountState {
+  switch (action.type) {
+    case "deposit":
+      return {
+        balance: state.balance + action.transaction.amount,
+        transactions: [...state.transactions, action.transaction]
+      };
+    case "withdraw":
+      return {
+        balance: state.balance - action.transaction.amount,
+        transactions: [...state.transactions, action.transaction]
+      };
+    default:
+      return state;
+  }
+}
+
+--------------------------------------------------
+8. Main Dashboard Component
+
+const BankingDashboard = () => {
+  const [state, dispatch] = React.useReducer(accountReducer, {
+    balance: 0,
+    transactions: []
+  });
+
+  const addTransaction = (amount: number, currency: "USD" | "EUR") => {
+    dispatch({
+      type: "deposit",
+      transaction: {
+        id: Date.now().toString(),
+        amount,
+        currency,
+        timestamp: new Date()
+      }
+    });
+  };
+
+  return (
+    <div>
+      <h2>Srishti’s Secure Banking Dashboard</h2>
+      <BalanceDisplay balance={state.balance} currency="USD" />
+      <TransactionForm onSubmit={addTransaction} />
+      <TransactionList
+        transactions={state.transactions}
+        onSelect={id => console.log("Selected:", id)}
+      />
+    </div>
+  );
+};
+
+--------------------------------------------------
+9. Output Explanation
+
+- All components use strictly typed props and state
+- Transactions cannot be created with invalid fields
+- Currency values are restricted using union types
+- State is immutable and safely managed
+- TypeScript prevents incorrect usage at compile time
+
+--------------------------------------------------
+10. Conclusion
+
+This case study demonstrates how TSX and typed components in React
+enforce strong type safety for financial applications.
+
+By typing props, state, reducers, and events:
+- Runtime bugs are minimized
+- Financial data integrity is preserved
+- Code remains scalable and maintainable
+
+--------------------------------------------------
+END OF CASE STUDY

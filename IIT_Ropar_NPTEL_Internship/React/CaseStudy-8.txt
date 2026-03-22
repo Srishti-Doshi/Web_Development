@@ -1,0 +1,281 @@
+CASE STUDY
+Memoization in React
+useMemo, useCallback, and React.memo
+
+--------------------------------------------------
+1. Problem Statement
+
+StreamVision – High-Performance Video Analytics Dashboard
+
+StreamVision is a real-time video analytics dashboard that:
+
+- Displays live video feeds
+- Renders heavy analytics charts
+- Shows real-time user comments
+- Supports filtering, toggling overlays, and user interactions
+
+As the application grows:
+
+- Expensive chart computations slow down rendering
+- Filtering comments causes unnecessary recalculations
+- Child components re-render even when props don’t change
+- Performance degrades with increasing data
+
+The challenge:
+Prevent unnecessary recalculations and component re-renders
+while maintaining clean, scalable React architecture.
+
+--------------------------------------------------
+2. Objective
+
+Implement memoization techniques to:
+
+- Cache expensive computed values
+- Stabilize callback references
+- Prevent unnecessary re-renders
+- Improve UI performance without over-optimizing
+
+Techniques Used:
+
+✔ useMemo
+✔ useCallback
+✔ React.memo
+
+--------------------------------------------------
+3. Architecture Overview
+
+Component Structure:
+
+Dashboard
+ ├── AnalyticsChart
+ ├── CommentsPanel
+ │     ├── FilterInput
+ │     └── CommentList
+ └── VideoOverlay
+
+Optimization Strategy:
+
+1. useMemo → Cache expensive calculations
+2. useCallback → Memoize handlers
+3. React.memo → Prevent child re-renders
+
+--------------------------------------------------
+4. useMemo – Caching Expensive Computations
+
+Scenario:
+Analytics chart processes large datasets.
+
+Without memoization:
+Computation runs on every render.
+
+Implementation:
+
+import React, { useMemo } from 'react';
+
+function computeAnalytics(data) {
+  // Simulated heavy computation
+  return data.reduce((acc, item) => acc + item.value, 0);
+}
+
+const AnalyticsChart = ({ data }) => {
+  const analyticsValue = useMemo(() => {
+    return computeAnalytics(data);
+  }, [data]);
+
+  return <div>Total Value: {analyticsValue}</div>;
+};
+
+How It Works:
+- computeAnalytics runs only when `data` changes.
+- Cached value reused for other renders.
+
+Performance Benefit:
+Avoids repeated heavy calculations.
+
+--------------------------------------------------
+5. useCallback – Memoizing Event Handlers
+
+Scenario:
+Passing filter function to child component.
+
+Problem:
+Every render creates a new function reference.
+Memoized child still re-renders.
+
+Solution:
+
+import React, { useState, useMemo, useCallback } from 'react';
+
+const FilterInput = React.memo(({ onFilter }) => {
+  console.log('FilterInput Rendered');
+  return (
+    <input
+      placeholder="Filter comments"
+      onChange={(e) => onFilter(e.target.value)}
+    />
+  );
+});
+
+const CommentsPanel = ({ comments }) => {
+  const [filter, setFilter] = useState('');
+
+  const filteredComments = useMemo(() => {
+    return comments.filter(c =>
+      c.text.toLowerCase().includes(filter.toLowerCase())
+    );
+  }, [comments, filter]);
+
+  const handleFilter = useCallback((value) => {
+    setFilter(value);
+  }, []);
+
+  return (
+    <div>
+      <FilterInput onFilter={handleFilter} />
+      <ul>
+        {filteredComments.map(c => (
+          <li key={c.id}>{c.text}</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+How It Works:
+- handleFilter keeps same reference across renders.
+- FilterInput does not re-render unless dependency changes.
+
+--------------------------------------------------
+6. React.memo – Preventing Re-Renders
+
+Scenario:
+Video overlay renders many UI elements.
+
+If parent re-renders,
+overlay re-renders unnecessarily.
+
+Solution:
+
+import React from 'react';
+
+const VideoOverlay = React.memo(({ overlays }) => {
+  console.log('VideoOverlay Rendered');
+  return (
+    <div>
+      {overlays.map(o => (
+        <span key={o.id}>{o.label}</span>
+      ))}
+    </div>
+  );
+});
+
+How It Works:
+- React.memo shallowly compares props.
+- If overlays unchanged → no re-render.
+
+--------------------------------------------------
+7. Full Optimized Dashboard Example
+
+import React, { useState, useMemo, useCallback } from 'react';
+
+const CommentList = React.memo(({ comments }) => {
+  console.log('CommentList Rendered');
+  return (
+    <ul>
+      {comments.map(c => (
+        <li key={c.id}>{c.text}</li>
+      ))}
+    </ul>
+  );
+});
+
+function Dashboard({ data, comments, overlays }) {
+  const [count, setCount] = useState(0);
+
+  const analytics = useMemo(() => {
+    return data.reduce((sum, item) => sum + item.value, 0);
+  }, [data]);
+
+  const increment = useCallback(() => {
+    setCount(c => c + 1);
+  }, []);
+
+  return (
+    <div>
+      <h2>Analytics: {analytics}</h2>
+      <button onClick={increment}>Increment {count}</button>
+
+      <CommentList comments={comments} />
+      <VideoOverlay overlays={overlays} />
+    </div>
+  );
+}
+
+Now:
+- Clicking increment does NOT re-render CommentList or VideoOverlay.
+- Expensive calculations do NOT re-run unnecessarily.
+
+--------------------------------------------------
+8. Performance Improvements Achieved
+
+✔ Reduced unnecessary re-renders
+✔ Prevented repeated expensive computations
+✔ Stabilized function references
+✔ Improved scalability for large datasets
+✔ Maintained readable, clean architecture
+
+--------------------------------------------------
+9. Common Pitfalls Avoided
+
+Over-memoization:
+Only memoized expensive or frequently used values.
+
+Unstable dependencies:
+Ensured dependency arrays include all required values.
+
+Stale closures:
+Used functional updates when needed (setCount(c => c + 1)).
+
+Memoizing impure logic:
+Only pure functions were memoized.
+
+--------------------------------------------------
+10. Best Practices Summary
+
+Use useMemo when:
+- Computation is expensive
+- Value depends on specific dependencies
+
+Use useCallback when:
+- Passing functions to memoized children
+- Function is used in dependency arrays
+
+Use React.memo when:
+- Component is pure
+- Props rarely change
+- Performance bottlenecks exist
+
+Measure before optimizing.
+Use React DevTools Profiler to identify real bottlenecks.
+
+--------------------------------------------------
+11. Conclusion
+
+By combining:
+
+- useMemo for caching
+- useCallback for stable handlers
+- React.memo for preventing unnecessary renders
+
+StreamVision achieves:
+
+✔ Smooth UI even with heavy data
+✔ Reduced CPU usage
+✔ Scalable performance
+✔ Clean, maintainable architecture
+
+Memoization ensures the dashboard remains fast
+even as complexity and data volume grow.
+
+--------------------------------------------------
+END OF CASE STUDY

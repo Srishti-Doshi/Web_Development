@@ -1,0 +1,344 @@
+Title: Building a Scalable Library System using MVC and Modular Design in Express
+Case Study: Maplewood Public Library
+
+
+------------------------------------------------------------
+1. Problem Statement: Chaos at Maplewood Public Library
+
+Maplewood Public Library had a basic software system to manage books and members. 
+However, as the library grew, the system became messy and difficult to maintain.
+
+Some major issues were:
+
+• Rules like “a member cannot borrow more than 5 books” were mixed inside route handling code.
+• Data access logic and business rules were tangled together.
+• Adding new features like online reservations or late fines became risky.
+• Small changes often broke unrelated functionality.
+• Testing was almost impossible because everything depended on everything else.
+
+The core problem was lack of separation.
+
+The library needed a system where:
+
+• Rules are clearly separated from request handling.
+• Storage details do not affect business logic.
+• New features can be added safely.
+• Testing can be done independently.
+
+To solve this, we redesign the system using MVC architecture, Repository Pattern, and Dependency Injection.
+
+
+------------------------------------------------------------
+2. Learning Objectives
+
+After completing this case study, I should be able to:
+
+• Understand and implement MVC architecture in Express.
+• Separate controllers, services, and repositories properly.
+• Use Repository Pattern to isolate storage logic.
+• Apply Dependency Injection for modular design.
+• Build scalable and testable backend systems.
+
+
+------------------------------------------------------------
+3. Concept: Understanding MVC (Simple Explanation)
+
+MVC stands for:
+
+Model – Represents data structure.
+View – Represents output (JSON or UI).
+Controller – Handles requests and responses.
+
+In our case:
+
+Model → Book structure  
+Controller → Handles HTTP requests  
+Service → Contains business rules  
+Repository → Handles data storage  
+
+We also add a Service layer between Controller and Repository to handle policies.
+
+
+------------------------------------------------------------
+4. Project Structure
+
+src/
+ ├── models/
+ ├── controllers/
+ ├── services/
+ ├── repositories/
+ └── app.ts
+
+This structure keeps responsibilities separated.
+
+
+------------------------------------------------------------
+5. Step-by-Step Implementation
+
+
+------------------------------------------------------------
+A. Model Layer (Book Structure)
+
+The model defines what a Book looks like.
+
+File: src/models/Book.ts
+
+export interface Book {
+  id: string;
+  title: string;
+  author: string;
+  isBorrowed: boolean;
+}
+
+This ensures consistency across the system.
+
+
+------------------------------------------------------------
+B. Repository Layer (Data Access)
+
+Repository handles storage. It hides how data is stored.
+
+Interface:
+File: src/repositories/interfaces/IBookRepository.ts
+
+export interface IBookRepository {
+  findAll(): Promise<Book[]>;
+  findById(id: string): Promise<Book | null>;
+  save(book: Book): Promise<void>;
+}
+
+Implementation:
+File: src/repositories/InMemoryBookRepository.ts
+
+import { IBookRepository } from "./interfaces/IBookRepository";
+import { Book } from "../models/Book";
+
+export class InMemoryBookRepository implements IBookRepository {
+  private books: Book[] = [];
+
+  async findAll(): Promise<Book[]> {
+    return this.books;
+  }
+
+  async findById(id: string): Promise<Book | null> {
+    return this.books.find(book => book.id === id) || null;
+  }
+
+  async save(book: Book): Promise<void> {
+    const index = this.books.findIndex(b => b.id === book.id);
+
+    if (index === -1) {
+      this.books.push(book);
+    } else {
+      this.books[index] = book;
+    }
+  }
+}
+
+Why Repository Pattern?
+
+• Business logic does not depend on storage details.
+• We can replace in-memory storage with database later.
+• Easy to mock in testing.
+
+
+------------------------------------------------------------
+C. Service Layer (Business Rules)
+
+Service contains policies and rules.
+
+File: src/services/BookService.ts
+
+import { IBookRepository } from "../repositories/interfaces/IBookRepository";
+import { Book } from "../models/Book";
+
+export class BookService {
+  constructor(private bookRepository: IBookRepository) {}
+
+  async borrowBook(bookId: string): Promise<Book> {
+    const book = await this.bookRepository.findById(bookId);
+
+    if (!book) {
+      throw new Error("Book not found");
+    }
+
+    if (book.isBorrowed) {
+      throw new Error("Book already borrowed");
+    }
+
+    const updatedBook = { ...book, isBorrowed: true };
+    await this.bookRepository.save(updatedBook);
+
+    return updatedBook;
+  }
+
+  async returnBook(bookId: string): Promise<Book> {
+    const book = await this.bookRepository.findById(bookId);
+
+    if (!book) {
+      throw new Error("Book not found");
+    }
+
+    if (!book.isBorrowed) {
+      throw new Error("Book is not currently borrowed");
+    }
+
+    const updatedBook = { ...book, isBorrowed: false };
+    await this.bookRepository.save(updatedBook);
+
+    return updatedBook;
+  }
+}
+
+Notice:
+
+• Controller does not contain business logic.
+• Repository does not enforce rules.
+• Service enforces policies.
+
+
+------------------------------------------------------------
+D. Controller Layer (Handling Requests)
+
+File: src/controllers/BookController.ts
+
+import { Request, Response } from "express";
+import { BookService } from "../services/BookService";
+
+export class BookController {
+  constructor(private bookService: BookService) {}
+
+  async borrowBook(req: Request, res: Response): Promise<void> {
+    try {
+      const book = await this.bookService.borrowBook(req.params.id);
+      res.status(200).json(book);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
+  async returnBook(req: Request, res: Response): Promise<void> {
+    try {
+      const book = await this.bookService.returnBook(req.params.id);
+      res.status(200).json(book);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+}
+
+Controller only:
+
+• Receives request
+• Calls service
+• Sends response
+
+
+------------------------------------------------------------
+E. Dependency Injection Setup
+
+File: src/app.ts
+
+import express from "express";
+import { BookController } from "./controllers/BookController";
+import { BookService } from "./services/BookService";
+import { InMemoryBookRepository } from "./repositories/InMemoryBookRepository";
+
+const app = express();
+app.use(express.json());
+
+const bookRepository = new InMemoryBookRepository();
+const bookService = new BookService(bookRepository);
+const bookController = new BookController(bookService);
+
+app.post("/books/:id/borrow", (req, res) =>
+  bookController.borrowBook(req, res)
+);
+
+app.post("/books/:id/return", (req, res) =>
+  bookController.returnBook(req, res)
+);
+
+app.listen(3000, () => {
+  console.log("Library system running on port 3000");
+});
+
+This is Dependency Injection.
+
+We inject repository into service.
+We inject service into controller.
+
+Nothing creates its own dependency.
+
+
+------------------------------------------------------------
+6. How This Solves the Library’s Problems
+
+• Business rules are isolated in Service layer.
+• Storage can change without affecting logic.
+• Controllers remain clean and simple.
+• Testing services becomes easy.
+• New features can be added without breaking existing code.
+
+Example:
+If tomorrow the rule changes to "max 3 books per member",
+we only update Service layer.
+
+
+------------------------------------------------------------
+7. Challenge
+
+Add a rule in BookService:
+
+A member cannot borrow more than 5 books.
+
+Hint:
+Create a Member model and check borrow count inside service layer.
+
+
+------------------------------------------------------------
+8. Common Pitfalls & Best Practices
+
+Mistake:
+Putting business logic inside controller.
+
+Best Practice:
+Controllers should stay thin.
+
+Mistake:
+Directly accessing database in controller.
+
+Best Practice:
+Always go through service and repository.
+
+Mistake:
+Tight coupling between layers.
+
+Best Practice:
+Use Dependency Injection.
+
+
+------------------------------------------------------------
+9. Key Takeaways
+
+• MVC separates responsibilities.
+• Repository Pattern hides storage details.
+• Service layer contains business logic.
+• Dependency Injection makes system modular.
+• Proper architecture improves scalability and testing.
+
+
+------------------------------------------------------------
+10. Conclusion
+
+By implementing MVC with modular design:
+
+• Code becomes easier to read.
+• Changes become safer.
+• Features can grow naturally.
+• Testing becomes practical.
+• The system becomes scalable.
+
+Maplewood Public Library now has a clean, maintainable, and future-ready system.
+
+End of Case Study

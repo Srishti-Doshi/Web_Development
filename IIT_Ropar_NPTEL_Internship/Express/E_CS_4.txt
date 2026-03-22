@@ -1,0 +1,302 @@
+Title: Request and Response(Building a Safe and Reliable Loyalty API using TypeScript and Express)
+Case Study: FreshMart Grocery Stores
+
+
+------------------------------------------------------------
+1. Problem Statement: A Day at FreshMart
+
+FreshMart, a growing grocery chain, launched a digital loyalty program to reward its customers. The idea was simple — customers collect points and redeem them for items like cakes, groceries, or discounts.
+
+However, after launch, serious problems started appearing:
+
+• Some customers had incomplete profiles, and the app crashed when they tried redeeming points.  
+• One customer accidentally entered "1000" instead of "100" and redeemed far more than intended.  
+• Staff couldn’t tell whether errors were caused by invalid input or internal server issues.  
+
+The breaking point happened when a customer named Sarah tried redeeming 500 points for a birthday cake. The system deducted her entire balance without checking stock availability. The cake was out of stock, the order failed, and her points were gone.
+
+FreshMart realized the core issue was poor validation and unclear error handling.
+
+My mission in this redesign is to:
+
+• Validate every incoming request strictly  
+• Prevent invalid or malicious data  
+• Return structured and meaningful responses  
+• Ensure business rules (like stock checks) are enforced properly  
+
+
+------------------------------------------------------------
+2. Learning Objectives
+
+After completing this case study, I should be able to:
+
+• Type request bodies and responses using TypeScript  
+• Perform runtime validation using schemas  
+• Return consistent error messages with proper status codes  
+• Use middleware for reusable validation logic  
+• Prevent bugs caused by unchecked input  
+
+
+------------------------------------------------------------
+3. Concept Explanation (In Simple Terms)
+
+I like to think of this API like a restaurant kitchen.
+
+Customers place orders (requests).  
+Chefs prepare meals (business logic).  
+Quality control checks the order before cooking (validation).  
+Servers deliver the final response (API response).
+
+If validation is missing, the kitchen might cook something that:
+• Was never properly ordered  
+• Cannot be delivered  
+• Breaks dietary restrictions  
+
+Similarly, in an API:
+If we don’t validate input, we risk corrupting data or breaking business rules.
+
+
+------------------------------------------------------------
+4. Typing Requests and Responses (TypeScript Safety)
+
+First, I define strict interfaces for the loyalty system.
+
+interface RedeemRequest {
+  customerId: string;
+  points: number;
+}
+
+interface ApiResponse<T = any> {
+  status: "success" | "error";
+  data?: T;
+  error?: string;
+}
+
+This ensures:
+• points must be a number  
+• customerId must be a string  
+• Response structure remains consistent  
+
+Then I type the Express route:
+
+router.post(
+  "/redeem",
+  (req: Request<{}, {}, RedeemRequest>,
+   res: Response<ApiResponse<{ remainingPoints: number }>>) => {
+
+    // logic here
+  }
+);
+
+Now TypeScript prevents mistakes like:
+{ points: "100" }  ← string instead of number
+
+
+------------------------------------------------------------
+5. Runtime Validation with Zod (Very Important)
+
+TypeScript helps during development, but at runtime, clients can still send bad data.
+
+So I use Zod for runtime validation.
+
+import { z } from "zod";
+
+const RedeemSchema = z.object({
+  customerId: z.string().uuid(),
+  points: z.number().int().positive(),
+});
+
+router.post("/redeem", (req, res) => {
+  const result = RedeemSchema.safeParse(req.body);
+
+  if (!result.success) {
+    return res.status(400).json({
+      status: "error",
+      error: result.error.errors[0].message
+    });
+  }
+
+  // Safe to continue with result.data
+});
+
+This ensures:
+• customerId must be a valid UUID  
+• points must be a positive integer  
+
+
+------------------------------------------------------------
+6. Reusable Validation Middleware
+
+To avoid repeating validation logic, I create middleware.
+
+function validate<T extends z.ZodTypeAny>(schema: T): RequestHandler {
+  return (req, res, next) => {
+    const result = schema.safeParse(req.body);
+
+    if (!result.success) {
+      return res.status(400).json({
+        status: "error",
+        error: result.error.errors[0].message
+      });
+    }
+
+    req.body = result.data;
+    next();
+  };
+}
+
+Usage:
+
+router.post("/redeem", validate(RedeemSchema), (req, res) => {
+  // req.body is now validated
+});
+
+This keeps the code clean and modular.
+
+
+------------------------------------------------------------
+7. Structured Error Handling
+
+Instead of returning random error messages, I define custom errors.
+
+class ApiError extends Error {
+  constructor(public statusCode: number, message: string) {
+    super(message);
+  }
+}
+
+class InsufficientPointsError extends ApiError {
+  constructor() {
+    super(400, "Insufficient points");
+  }
+}
+
+Global error handler:
+
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof ApiError) {
+    res.status(err.statusCode).json({
+      status: "error",
+      error: err.message
+    });
+  } else {
+    console.error(err);
+    res.status(500).json({
+      status: "error",
+      error: "Internal server error"
+    });
+  }
+});
+
+Now:
+• Known errors are clear  
+• Unexpected errors don’t expose sensitive details  
+
+
+------------------------------------------------------------
+8. Final Redeem Endpoint (Improved Version)
+
+router.post(
+  "/redeem",
+  validate(RedeemSchema),
+  async (req: Request<{}, {}, RedeemRequest>, res: Response) => {
+
+    const { customerId, points } = req.body;
+
+    const member = await db.loyaltyMembers.findOne({ customerId });
+
+    if (!member) {
+      throw new ApiError(404, "Customer not found");
+    }
+
+    if (member.points < points) {
+      throw new InsufficientPointsError();
+    }
+
+    const item = await db.inventory.findOne({ sku: "CAKE" });
+
+    if (!item || item.stock < 1) {
+      throw new ApiError(409, "Item out of stock");
+    }
+
+    await db.loyaltyMembers.updateOne(
+      { customerId },
+      { $inc: { points: -points } }
+    );
+
+    await db.inventory.updateOne(
+      { sku: "CAKE" },
+      { $inc: { stock: -1 } }
+    );
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        customerId,
+        remainingPoints: member.points - points
+      }
+    });
+  }
+);
+
+Now Sarah’s issue is prevented because:
+• Points are validated  
+• Stock is checked  
+• Errors are structured  
+• No silent failures occur  
+
+
+------------------------------------------------------------
+9. Interactive Challenge
+
+Implement:
+
+POST /transfer
+
+Requirements:
+
+• Validate fromCustomerId and toCustomerId as UUIDs  
+• points must be positive integer  
+• Sender must have enough points  
+• Return 404 if either user not found  
+• Return 400 if insufficient points  
+• Return 200 on success  
+
+
+------------------------------------------------------------
+10. Common Mistakes to Avoid
+
+• Relying only on TypeScript (runtime validation still required)  
+• Returning inconsistent error formats  
+• Not checking business rules before updating database  
+• Exposing raw server errors  
+
+
+------------------------------------------------------------
+11. Key Takeaways
+
+• TypeScript improves development safety  
+• Zod ensures runtime validation  
+• Structured error handling improves clarity  
+• Middleware keeps code reusable and clean  
+• Proper validation prevents real-world failures like Sarah’s case  
+
+
+------------------------------------------------------------
+12. Final Conclusion
+
+A well-designed API must never trust user input blindly.
+
+By combining:
+
+• Type safety  
+• Runtime validation  
+• Custom errors  
+• Global error handling  
+
+FreshMart’s loyalty API becomes reliable, secure, and predictable.
+
+Most importantly, customers like Sarah will never lose their points due to poor validation again.
+
+
+End of Case Study

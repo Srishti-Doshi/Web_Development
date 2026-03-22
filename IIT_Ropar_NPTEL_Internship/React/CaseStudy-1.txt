@@ -1,0 +1,191 @@
+CASE STUDY
+TSX & Typed Components in React (TypeScript)
+
+1. Problem Statement
+Smart Portfolio Dashboard
+
+A finance dashboard is required to manage user assets such as stocks and cryptocurrencies.
+Each asset must display:
+- Asset name
+- Symbol
+- Current value
+- Percentage change
+
+Users should be able to add and remove assets safely.
+The application must avoid runtime errors caused by missing or incorrect data types.
+
+To ensure robustness and maintainability, React with TypeScript (TSX) is used so that
+props and state are strictly typed.
+
+--------------------------------------------------
+
+2. Objectives
+- Implement typed React components using TSX
+- Use interfaces for props and state
+- Demonstrate both functional and class components
+- Prevent runtime errors through static type checking
+
+--------------------------------------------------
+
+3. Data Model
+
+interface Asset {
+  name: string;
+  symbol: string;
+  value: number;
+  change: number;
+}
+
+--------------------------------------------------
+
+4. Functional Component: Asset Card
+
+interface AssetCardProps {
+  asset: Asset;
+  onRemove: (symbol: string) => void;
+}
+
+const AssetCard = ({ asset, onRemove }: AssetCardProps) => {
+  return (
+    <div>
+      <h4>{asset.name} ({asset.symbol})</h4>
+      <p>Value: ₹{asset.value}</p>
+      <p>
+        Change: {asset.change > 0 ? "+" : ""}
+        {asset.change}%
+      </p>
+      <button onClick={() => onRemove(asset.symbol)}>Remove</button>
+    </div>
+  );
+};
+
+--------------------------------------------------
+
+5. Functional Component: Asset List
+
+interface AssetListProps {
+  assets: Asset[];
+  onRemove: (symbol: string) => void;
+}
+
+const AssetList = ({ assets, onRemove }: AssetListProps) => {
+  return (
+    <div>
+      {assets.map(item => (
+        <AssetCard
+          key={item.symbol}
+          asset={item}
+          onRemove={onRemove}
+        />
+      ))}
+    </div>
+  );
+};
+
+--------------------------------------------------
+
+6. Class Component: Asset Form
+
+interface AssetFormProps {
+  onAdd: (asset: Asset) => void;
+}
+
+interface AssetFormState {
+  name: string;
+  symbol: string;
+  value: string;
+  change: string;
+}
+
+class AssetForm extends React.Component<AssetFormProps, AssetFormState> {
+  state: AssetFormState = {
+    name: "",
+    symbol: "",
+    value: "",
+    change: ""
+  };
+
+  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      [e.target.name]: e.target.value
+    } as Pick<AssetFormState, keyof AssetFormState>);
+  };
+
+  handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    this.props.onAdd({
+      name: this.state.name,
+      symbol: this.state.symbol,
+      value: Number(this.state.value),
+      change: Number(this.state.change)
+    });
+
+    this.setState({
+      name: "",
+      symbol: "",
+      value: "",
+      change: ""
+    });
+  };
+
+  render() {
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <input name="name" value={this.state.name} onChange={this.handleChange} />
+        <input name="symbol" value={this.state.symbol} onChange={this.handleChange} />
+        <input name="value" value={this.state.value} onChange={this.handleChange} />
+        <input name="change" value={this.state.change} onChange={this.handleChange} />
+        <button type="submit">Add Asset</button>
+      </form>
+    );
+  }
+}
+
+--------------------------------------------------
+
+7. Main Component: Portfolio Dashboard
+
+const PortfolioDashboard = () => {
+  const [assets, setAssets] = React.useState<Asset[]>([
+    { name: "Bitcoin", symbol: "BTC", value: 30000, change: 2.5 },
+    { name: "Ethereum", symbol: "ETH", value: 1800, change: -1.2 }
+  ]);
+
+  const addAsset = (asset: Asset) => {
+    setAssets([...assets, asset]);
+  };
+
+  const removeAsset = (symbol: string) => {
+    setAssets(assets.filter(a => a.symbol !== symbol));
+  };
+
+  return (
+    <div>
+      <h2>Srishti's Portfolio Dashboard</h2>
+      <AssetForm onAdd={addAsset} />
+      <AssetList assets={assets} onRemove={removeAsset} />
+    </div>
+  );
+};
+
+export default PortfolioDashboard;
+
+--------------------------------------------------
+
+8. Output Explanation
+- Assets are displayed with strict type safety
+- Users can add and remove assets
+- State and props are fully typed
+- Runtime type-related bugs are avoided
+
+--------------------------------------------------
+
+9. Conclusion
+This case study shows how TSX and typed components in React help in building
+robust, maintainable, and error-free applications by enforcing strict typing
+for props, state, and event handling.
+
+--------------------------------------------------
+
+END OF CASE STUDY

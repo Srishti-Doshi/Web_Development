@@ -1,0 +1,220 @@
+Title: Getting Started with Express
+Case Study: Bringing Greenfield Community Center Online
+
+
+1. Introduction
+
+Greenfield Community Center wants to move its communication system online. Currently, event registrations, class sign-ups, and general queries are handled manually through phone calls and handwritten notes, which often leads to confusion or lost information.
+
+To solve this problem, the center needs a simple web server that can:
+
+- Show upcoming events
+- Allow people to check information online
+- Respond reliably to requests
+- Stay available at all times
+
+Express, a web framework built on Node.js, provides a lightweight and practical solution for setting up such a system.
+
+
+------------------------------------------------------------
+
+2. What is Express?
+
+Express is a minimal and flexible web framework for Node.js. It helps developers create web servers and APIs easily without writing too much boilerplate code.
+
+Node.js allows JavaScript to run outside the browser (on a server). Express builds on top of Node.js and makes handling requests and responses much simpler.
+
+In simple terms:
+
+Node.js = Engine that runs JavaScript on the server  
+Express = Tool that helps build web servers easily  
+
+
+------------------------------------------------------------
+
+3. Why Use Express?
+
+Express is:
+
+- Lightweight and fast
+- Beginner-friendly
+- Widely used in industry
+- Easy to expand as the application grows
+
+For Greenfield Community Center, Express acts like a digital receptionist that listens to requests and responds properly.
+
+
+------------------------------------------------------------
+
+4. Installation and Setup
+
+Step 1: Install Node.js
+
+Download the LTS version from:
+https://nodejs.org
+
+After installation, verify in terminal:
+
+node -v
+npm -v
+
+If versions are displayed, installation was successful.
+
+
+Step 2: Initialize a Project
+
+Create a new project folder:
+
+mkdir greenfield-center
+cd greenfield-center
+
+Initialize the project:
+
+npm init -y
+
+This creates a package.json file which manages project dependencies.
+
+
+Step 3: Install Express
+
+npm install express
+
+This downloads Express and adds it to the project.
+
+
+------------------------------------------------------------
+
+5. Creating the First Express Server
+
+Create a file called app.js and add:
+
+const express = require('express');
+const app = express();
+const port = 3000;
+
+app.get('/', (req, res) => {
+  res.send('Welcome to Greenfield Community Center!');
+});
+
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
+
+
+Explanation:
+
+require('express') imports the Express library.
+
+express() creates the application object.
+
+app.get('/') defines a route for the homepage.
+
+res.send() sends a response to the browser.
+
+app.listen() starts the server on port 3000.
+
+
+------------------------------------------------------------
+
+6. Adding More Routes
+
+To provide useful information, we can add additional routes.
+
+Example: Events Route
+
+app.get('/events', (req, res) => {
+  const events = [
+    'Yoga Class - Monday 7pm',
+    'Gardening Workshop - Wednesday 5pm',
+    'Book Club - Friday 6pm'
+  ];
+
+  res.json(events);
+});
+
+Explanation:
+
+When someone visits:
+http://localhost:3000/events
+
+The server returns a list of events in JSON format.
+
+res.json() automatically formats the response properly.
+
+
+------------------------------------------------------------
+
+7. How Express Handles Requests
+
+When a user opens a URL in the browser:
+
+1. The browser sends a request.
+2. Node.js receives the request.
+3. Express checks if a matching route exists.
+4. If matched, Express runs the corresponding function.
+5. The server sends a response back to the browser.
+
+This process ensures that every request is handled properly without being lost.
+
+
+------------------------------------------------------------
+
+8. Running and Testing the Server
+
+Start the server:
+
+node app.js
+
+Then open a browser and visit:
+
+http://localhost:3000/
+http://localhost:3000/events
+
+If everything works correctly, the server is successfully running.
+
+
+------------------------------------------------------------
+
+9. Extending the System
+
+Example: Add a Contact Route
+
+app.get('/contact', (req, res) => {
+  res.json({
+    email: "contact@greenfieldcenter.org",
+    phone: "+1-555-123-4567"
+  });
+});
+
+This allows visitors to access contact information online.
+
+Adding new features is as simple as adding more routes.
+
+
+------------------------------------------------------------
+
+10. Best Practices
+
+- Always run npm install before starting a project.
+- Use appropriate HTTP methods (GET for reading, POST for creating).
+- Avoid hardcoding values like port numbers in production.
+- Use environment variables for configuration.
+- Structure code clearly as the application grows.
+
+
+------------------------------------------------------------
+
+11. Conclusion
+
+Using Express, Greenfield Community Center can now:
+
+- Provide information online 24/7
+- Reduce manual errors and lost requests
+- Easily expand features in the future
+
+Express provides a simple and efficient way to build web servers using Node.js. Even for beginners, it offers a clean structure and clear workflow for handling online requests.
+
+This setup forms the foundation for building more advanced applications such as registration forms, databases, and authentication systems.
+
+
+End of Case Study

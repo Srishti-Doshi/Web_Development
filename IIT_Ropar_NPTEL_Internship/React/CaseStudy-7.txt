@@ -1,0 +1,331 @@
+CASE STUDY
+Advanced State Management with Zustand
+Middleware, Persistence, and Async Patterns
+
+--------------------------------------------------
+1. Problem Statement
+
+CollabNotes – Real-Time Collaborative Notes Platform
+
+CollabNotes is a real-time collaborative note-taking application
+used by teams to create, edit, and manage shared notes.
+
+System Requirements:
+
+- Notes must update instantly across components.
+- User preferences must persist across reloads.
+- Session data must survive browser refresh.
+- Every state change must be logged for auditing.
+- Notes are fetched from a cloud API.
+- State must remain scalable, minimal, and type-safe.
+- Performance must avoid unnecessary re-renders.
+
+The challenge:
+Design a persistent, observable, async-ready state system
+using Zustand with minimal boilerplate and maximum reliability.
+
+--------------------------------------------------
+2. Architectural Overview
+
+State is divided into:
+
+1. Notes Store (Business Logic)
+2. Preferences Store (Persisted UI Settings)
+3. Session Store (Authentication State)
+4. History Store (Audit & Logging)
+5. Async Data Layer (React Query integration)
+
+Middleware used:
+
+- devtools → debugging
+- persist → storage
+- immer → immutable updates
+- custom logger → audit tracking
+
+--------------------------------------------------
+3. Persisted Preferences Store (with Migration)
+
+File: store/preferencesStore.ts
+
+import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+
+interface PreferencesState {
+  theme: 'light' | 'dark';
+  fontSize: number;
+  setTheme: (theme: 'light' | 'dark') => void;
+  setFontSize: (size: number) => void;
+}
+
+export const usePreferencesStore = create<PreferencesState>()(
+  persist(
+    (set) => ({
+      theme: 'light',
+      fontSize: 14,
+      setTheme: (theme) => set({ theme }),
+      setFontSize: (size) => set({ fontSize: size }),
+    }),
+    {
+      name: 'collabnotes-preferences',
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        theme: state.theme,
+        fontSize: state.fontSize,
+      }),
+      version: 2,
+      migrate: (persistedState: any, version) => {
+        if (version < 2) {
+          return { ...persistedState, fontSize: 14 };
+        }
+        return persistedState;
+      },
+    }
+  )
+);
+
+Key Points:
+- Only theme and fontSize are persisted.
+- Versioning ensures safe schema upgrades.
+- Migration handles older stored versions.
+
+--------------------------------------------------
+4. Session Store with Partial Persistence
+
+File: store/sessionStore.ts
+
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+
+interface SessionState {
+  userId: string | null;
+  token: string | null;
+  expiresAt: number | null;
+  role: 'admin' | 'user';
+  login: (id: string, token: string, expiry: number) => void;
+  logout: () => void;
+}
+
+export const useSessionStore = create<SessionState>()(
+  persist(
+    (set) => ({
+      userId: null,
+      token: null,
+      expiresAt: null,
+      role: 'user',
+      login: (id, token, expiry) =>
+        set({
+          userId: id,
+          token,
+          expiresAt: expiry,
+        }),
+      logout: () =>
+        set({
+          userId: null,
+          token: null,
+          expiresAt: null,
+        }),
+    }),
+    {
+      name: 'collabnotes-session',
+      partialize: (state) => ({
+        userId: state.userId,
+        token: state.token,
+      }),
+      version: 2,
+      migrate: (persistedState: any, version) => {
+        if (version < 2) {
+          return { ...persistedState, role: 'user' };
+        }
+        return persistedState;
+      },
+    }
+  )
+);
+
+Only userId and token are persisted.
+expiresAt is intentionally excluded.
+
+--------------------------------------------------
+5. Notes Store with Devtools, Immer & Logging
+
+File: store/noteStore.ts
+
+import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
+import { immer } from 'zustand/middleware/immer';
+
+interface Note {
+  id: string;
+  text: string;
+}
+
+interface NoteState {
+  notes: Note[];
+  addNote: (note: Note) => void;
+  updateNote: (id: string, text: string) => void;
+  deleteNote: (id: string) => void;
+}
+
+const logMiddleware =
+  (config: any) =>
+  (set: any, get: any, api: any) =>
+    config(
+      (args: any) => {
+        console.log('Before:', get());
+        set(args);
+        console.log('After:', get());
+      },
+      get,
+      api
+    );
+
+export const useNoteStore = create<NoteState>()(
+  devtools(
+    immer(
+      logMiddleware((set) => ({
+        notes: [],
+        addNote: (note) =>
+          set((state: NoteState) => {
+            state.notes.push(note);
+          }),
+        updateNote: (id, text) =>
+          set((state: NoteState) => {
+            const note = state.notes.find((n) => n.id === id);
+            if (note) note.text = text;
+          }),
+        deleteNote: (id) =>
+          set((state: NoteState) => {
+            state.notes = state.notes.filter((n) => n.id !== id);
+          }),
+      }))
+    )
+  )
+);
+
+Middleware Order:
+- immer wraps logic
+- logger wraps updates
+- devtools is applied last
+
+--------------------------------------------------
+6. History Store (Audit Log)
+
+interface HistoryEntry {
+  noteId: string;
+  action: string;
+  timestamp: number;
+}
+
+interface HistoryState {
+  history: HistoryEntry[];
+  addHistoryEntry: (entry: HistoryEntry) => void;
+  clearHistory: () => void;
+}
+
+export const useHistoryStore = create<HistoryState>()(
+  devtools(
+    immer((set) => ({
+      history: [],
+      addHistoryEntry: (entry) =>
+        set((state) => {
+          state.history.push(entry);
+        }),
+      clearHistory: () =>
+        set((state) => {
+          state.history = [];
+        }),
+    }))
+  )
+);
+
+--------------------------------------------------
+7. Async Data with React Query
+
+React Query handles API communication.
+Zustand manages UI state.
+
+Example:
+
+import { useQuery } from '@tanstack/react-query';
+import { useNoteStore } from './noteStore';
+
+function NotesList() {
+  const setNotes = useNoteStore((s) => s.addNote);
+  const notes = useNoteStore((s) => s.notes);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['notes'],
+    queryFn: fetchNotesFromAPI,
+    onSuccess: (data) => {
+      data.forEach((note: any) =>
+        setNotes({ id: note.id, text: note.text })
+      );
+    },
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+
+  return (
+    <ul>
+      {notes.map((n) => (
+        <li key={n.id}>{n.text}</li>
+      ))}
+    </ul>
+  );
+}
+
+React Query:
+- Fetches & caches server data
+- Handles retries & loading states
+- Keeps network logic separate
+
+Zustand:
+- Manages local state
+- Handles UI updates
+
+--------------------------------------------------
+8. Best Practices Applied
+
+✔ Persist only required fields using partialize  
+✔ Use version + migrate for schema upgrades  
+✔ Apply devtools last in middleware chain  
+✔ Use immer for clean immutable logic  
+✔ Use selectors to avoid unnecessary re-renders  
+✔ Separate async fetching (React Query) from UI state (Zustand)  
+✔ Keep stores modular and focused  
+
+--------------------------------------------------
+9. Performance Considerations
+
+- Components subscribe only to specific slices:
+  useNoteStore((s) => s.notes)
+
+- No unnecessary global re-renders
+- Middleware is lightweight
+- State updates are predictable and traceable
+
+--------------------------------------------------
+10. Conclusion
+
+By combining:
+
+- Zustand slices
+- Middleware (persist, devtools, immer)
+- Versioning & migrations
+- Custom logging
+- React Query for async handling
+
+CollabNotes achieves:
+
+- Persistent state across sessions
+- Audit-ready logging
+- Minimal boilerplate
+- High performance
+- Full type safety
+- Scalable architecture
+
+This architecture ensures long-term maintainability
+and reliability for real-time collaborative applications.
+
+--------------------------------------------------
+END OF CASE STUDY

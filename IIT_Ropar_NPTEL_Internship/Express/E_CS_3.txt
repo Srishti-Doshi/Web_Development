@@ -1,0 +1,288 @@
+Title: Understanding HTTP Methods & Status Codes in Express
+Case Study: Neighborhood Food Store Network
+
+
+------------------------------------------------------------
+1. Problem Statement
+
+Imagine managing a group of neighborhood food stores.
+
+Every day, different types of requests come in:
+
+- Customers want to see available products.
+- Staff need to add new items to inventory.
+- Prices or stock details must be updated.
+- Old or discontinued items must be removed.
+
+If the system doesn’t clearly understand what action is being requested — or if it responds unclearly — confusion happens. Orders get delayed. Data becomes inconsistent.
+
+So the core question is:
+
+How can we design an Express-based system that correctly understands different types of requests and always responds clearly and accurately?
+
+
+------------------------------------------------------------
+2. Learning Objectives
+
+After completing this case study, I should be able to:
+
+- Understand the purpose of different HTTP methods.
+- Implement RESTful routes using Express.
+- Use correct HTTP status codes in responses.
+- Handle errors properly.
+- Understand when to use GET, POST, PUT, PATCH, and DELETE.
+- Send meaningful responses so the client always knows what happened.
+
+
+------------------------------------------------------------
+3. Understanding Requests and Responses
+
+When a client (browser, app, or tool like Postman) sends a request to a server, it includes:
+
+- A method (GET, POST, etc.)
+- A URL (like /products)
+- Optional data (like JSON body)
+
+The server processes the request and sends back:
+
+- A status code
+- A response body
+- Optional headers
+
+This communication follows HTTP (HyperText Transfer Protocol).
+
+
+------------------------------------------------------------
+4. HTTP Methods – What Action Is Being Requested?
+
+HTTP methods are like verbs. They describe what action the client wants to perform.
+
+GET  
+Used to retrieve data.  
+Example: Show all products.
+
+POST  
+Used to create new data.  
+Example: Add a new product.
+
+PUT  
+Used to completely replace an existing resource.  
+Example: Replace all details of a product.
+
+PATCH  
+Used to partially update a resource.  
+Example: Change only the price.
+
+DELETE  
+Used to remove a resource.  
+Example: Remove a product from inventory.
+
+Using correct methods makes the API predictable and professional.
+
+
+------------------------------------------------------------
+5. HTTP Status Codes – What Is the Result?
+
+Every response must include a status code. It tells the client what happened.
+
+Most important ones:
+
+200 OK  
+Request successful.
+
+201 Created  
+New resource created successfully.
+
+204 No Content  
+Request successful but no response body (commonly used for DELETE).
+
+400 Bad Request  
+Client sent invalid data.
+
+404 Not Found  
+Requested resource does not exist.
+
+500 Internal Server Error  
+Something unexpected happened on the server.
+
+Using correct status codes makes debugging easier and improves API reliability.
+
+
+------------------------------------------------------------
+6. Implementing RESTful Routes in Express (TypeScript Example)
+
+Below is a simple implementation for managing products.
+
+Product Interface and Sample Data:
+
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  inStock: boolean;
+}
+
+let products: Product[] = [
+  { id: "1", name: "Bananas", price: 1.5, inStock: true },
+  { id: "2", name: "Apples", price: 2.0, inStock: false },
+];
+
+
+Express Router Implementation:
+
+import { Router, Request, Response } from "express";
+const router = Router();
+
+
+GET all products
+
+router.get("/", (req: Request, res: Response) => {
+  res.status(200).json(products);
+});
+
+
+GET product by ID
+
+router.get("/:id", (req: Request, res: Response) => {
+  const product = products.find(p => p.id === req.params.id);
+
+  if (!product) {
+    return res.status(404).json({ message: "Product not found" });
+  }
+
+  res.status(200).json(product);
+});
+
+
+POST new product
+
+router.post("/", (req: Request, res: Response) => {
+  const { name, price, inStock } = req.body;
+
+  if (!name || price === undefined || inStock === undefined) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  const newProduct: Product = {
+    id: (products.length + 1).toString(),
+    name,
+    price,
+    inStock,
+  };
+
+  products.push(newProduct);
+
+  res.status(201).json(newProduct);
+});
+
+
+PUT – Replace entire product
+
+router.put("/:id", (req: Request, res: Response) => {
+  const index = products.findIndex(p => p.id === req.params.id);
+
+  if (index === -1) {
+    return res.status(404).json({ message: "Product not found" });
+  }
+
+  const { name, price, inStock } = req.body;
+
+  if (!name || price === undefined || inStock === undefined) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  products[index] = { id: req.params.id, name, price, inStock };
+
+  res.status(200).json(products[index]);
+});
+
+
+PATCH – Update only price
+
+router.patch("/:id/price", (req: Request, res: Response) => {
+  const product = products.find(p => p.id === req.params.id);
+  const { price } = req.body;
+
+  if (!product) {
+    return res.status(404).json({ message: "Product not found" });
+  }
+
+  if (typeof price !== "number" || price < 0) {
+    return res.status(400).json({ message: "Invalid price value" });
+  }
+
+  product.price = price;
+
+  res.status(200).json(product);
+});
+
+
+DELETE product
+
+router.delete("/:id", (req: Request, res: Response) => {
+  const index = products.findIndex(p => p.id === req.params.id);
+
+  if (index === -1) {
+    return res.status(404).json({ message: "Product not found" });
+  }
+
+  products.splice(index, 1);
+
+  res.sendStatus(204);
+});
+
+
+------------------------------------------------------------
+7. Challenge
+
+Add a new PATCH route:
+
+PATCH /products/:id/inStock
+
+Requirements:
+
+- Update only the inStock field.
+- Return 400 if the value is missing or not boolean.
+- Return 404 if product does not exist.
+- Return 200 if update is successful.
+
+
+------------------------------------------------------------
+8. Why This Structure Is Important
+
+Using proper HTTP methods:
+
+- Makes the API predictable.
+- Makes debugging easier.
+- Makes it easier for frontend developers to integrate.
+
+Using correct status codes:
+
+- Clearly communicates success or failure.
+- Helps tools like Postman and browsers understand the response.
+- Prevents confusion in production systems.
+
+Proper validation prevents invalid or inconsistent data.
+
+
+------------------------------------------------------------
+9. Common Mistakes to Avoid
+
+- Using GET for data modification.
+- Always returning 200 even when something fails.
+- Not validating input data.
+- Not handling the case where a resource does not exist.
+- Sending vague error messages.
+
+
+------------------------------------------------------------
+10. Final Takeaways
+
+- HTTP methods represent actions.
+- Status codes represent results.
+- RESTful APIs are structured and predictable.
+- Clear responses improve system reliability.
+- Good API design prevents confusion and future bugs.
+
+
+End of Case Study
