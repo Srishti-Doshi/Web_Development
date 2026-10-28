@@ -216,19 +216,8 @@ a{
     align-items: center;
 }
 
-.album {
-    width: 25%;
-    background-color: green;
-}
-
 .player {
     width: 50%;
-    background-color: red;
-}
-
-.controls {
-    width: 25%;
-    background-color: yellow;
 }
 
 .player-controls {
@@ -274,4 +263,35 @@ a{
     background-color: #1bd760;
     border-radius: 50%;
     margin-top: -6px;
+}
+
+.album{
+    width: 20%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-right: 3rem;
+}
+
+.album ul {
+    list-style: none;
+}
+
+.album .content{
+    padding: 0px;
+    margin: 0px;
+}
+
+
+.controls{
+    width: 25%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.controls .volume{
+    width: 35%;
+    display: flex;
+    margin-right: 3rem;
 }
